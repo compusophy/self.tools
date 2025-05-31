@@ -1,8 +1,15 @@
 {
-  "name": "subdomain-platform-kit",
+  "name": "self.tools",
   "version": "1.0.0",
-  "description": "A powerful Next.js platform for creating and managing custom subdomains with AI-powered content editing",
-  "private": true,
+  "description": "A powerful Next.js platform for creating and managing custom subdomains with AI-powered content editing and Farcaster frame support",
+  "private": false,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/compusophy/self.tools.git"
+  },
+  "homepage": "https://self.tools",
+  "author": "compusophy",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -46,6 +53,10 @@
     "ai",
     "gemini",
     "cms",
-    "platform"
+    "platform",
+    "farcaster",
+    "frames",
+    "web3",
+    "open-source"
   ]
 }
