@@ -6,6 +6,8 @@ import { protocol, rootDomain } from '@/lib/utils';
 import { SubdomainEditor } from '@/components/subdomain-editor';
 import { FrameProvider } from '@/components/frame-provider';
 import { ShareButton } from '@/components/share-button';
+import { LayoutHeader } from '@/components/layout-header';
+import { LayoutFooter } from '@/components/layout-footer';
 
 export async function generateMetadata({
   params
@@ -126,47 +128,43 @@ export default async function SubdomainPage({
 
   return (
     <FrameProvider subdomain={subdomain}>
-      <div className={`h-screen ${theme.background} relative flex flex-col`}>
-        {/* Header with home link */}
-        <div className="absolute top-4 left-4 z-40">
-          <Link
-            href={`${protocol}://${rootDomain}`}
-            className={`text-sm ${theme.textSecondary} hover:${theme.textPrimary} transition-colors`}
-          >
-            ← {rootDomain}
-          </Link>
-        </div>
+      <div className={`min-h-screen ${theme.background} flex flex-col`}>
+        {/* Header */}
+        <LayoutHeader 
+          showHomeLink={true}
+          showEditButton={subdomainData.settings.allowEditing}
+          editButton={<SubdomainEditor subdomain={subdomain} data={subdomainData} />}
+          theme={theme}
+          variant="themed"
+        />
 
-        {/* Edit Button - positioned in top right */}
-        {subdomainData.settings.allowEditing && (
-          <SubdomainEditor subdomain={subdomain} data={subdomainData} />
-        )}
+        {/* Main Content */}
+        <main className="flex-1 py-16 overflow-y-auto">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <div className="max-w-4xl mx-auto">
+              {/* Header Section */}
+              <div className="text-center mb-12">
+                <h1 className={`text-5xl font-bold mb-6 ${theme.textPrimary}`}>
+                  {subdomainData.content.title}
+                </h1>
+                <p className={`text-xl ${theme.textSecondary} max-w-2xl mx-auto`}>
+                  {subdomainData.content.description}
+                </p>
+              </div>
 
-        {/* Main Content - takes up 90% of height */}
-        <div className="flex-1 container mx-auto px-4 py-16 overflow-y-auto">
-          <div className="max-w-4xl mx-auto">
-            {/* Header Section */}
-            <div className="text-center mb-12">
-              <h1 className={`text-5xl font-bold mb-6 ${theme.textPrimary}`}>
-                {subdomainData.content.title}
-              </h1>
-              <p className={`text-xl ${theme.textSecondary} max-w-2xl mx-auto`}>
-                {subdomainData.content.description}
-              </p>
+              {/* Body Content */}
+              <div 
+                className={`max-w-none ${theme.textPrimary}`}
+                dangerouslySetInnerHTML={{ __html: `<div class="text-gray-300">${processedBody}</div>` }}
+              />
             </div>
-
-            {/* Body Content */}
-            <div 
-              className={`max-w-none ${theme.textPrimary}`}
-              dangerouslySetInnerHTML={{ __html: `<div class="text-gray-300">${processedBody}</div>` }}
-            />
           </div>
-        </div>
+        </main>
 
-        {/* Footer - exactly 10% height */}
-        <div className={`h-[10vh] ${theme.background === 'bg-white' ? 'border-gray-200' : 'border-gray-700'} border-t flex items-center justify-center ${theme.textSecondary}`}>
+        {/* Footer */}
+        <LayoutFooter variant="themed" theme={theme}>
           <ShareButton subdomain={subdomain} />
-        </div>
+        </LayoutFooter>
       </div>
     </FrameProvider>
   );

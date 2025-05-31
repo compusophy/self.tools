@@ -25,7 +25,7 @@ export function ShareButton({ subdomain, className }: ShareButtonProps) {
       onClick={handleShare}
       variant="outline"
       size="sm"
-      className={className}
+      className={`shadow-lg ${className || ''}`}
     >
       <Share2 className="w-4 h-4 mr-2" />
       Share

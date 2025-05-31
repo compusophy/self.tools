@@ -4,7 +4,10 @@ import { SubdomainForm } from './subdomain-form';
 import { protocol, rootDomain } from '@/lib/utils';
 import { FrameProvider } from '@/components/frame-provider';
 import { Button } from '@/components/ui/button';
-import { Settings } from 'lucide-react';
+import { Settings, Share2 } from 'lucide-react';
+import { LayoutHeader } from '@/components/layout-header';
+import { LayoutFooter } from '@/components/layout-footer';
+import { HomeShareButton } from '@/components/home-share-button';
 
 export async function generateMetadata(): Promise<Metadata> {
   const frameData = {
@@ -39,33 +42,36 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   return (
     <FrameProvider>
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4 relative">
-        <Button
-          asChild
-          variant="outline"
-          size="sm"
-          className="fixed top-4 right-4 z-50 shadow-lg"
-        >
-          <Link href="/admin">
-            <Settings className="w-4 h-4 mr-2" />
-            Admin
-          </Link>
-        </Button>
+      <div className="flex min-h-screen flex-col bg-background">
+        {/* Header */}
+        <LayoutHeader showSourceButton={true} showAdminButton={true} />
 
-        <div className="w-full max-w-md space-y-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-foreground">
-              {rootDomain}
-            </h1>
-            <p className="mt-3 text-lg text-muted-foreground">
-              Create your own custom subdomain
-            </p>
-          </div>
+        {/* Main Content */}
+        <main className="flex-1 flex items-center justify-center py-16">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <div className="flex items-center justify-center">
+              <div className="w-full max-w-md space-y-8">
+                <div className="text-center">
+                  <h1 className="text-4xl font-bold tracking-tight text-foreground">
+                    {rootDomain}
+                  </h1>
+                  <p className="mt-3 text-lg text-muted-foreground">
+                    Create your own custom subdomain
+                  </p>
+                </div>
 
-          <div className="mt-8 bg-card shadow-md rounded-lg p-6">
-            <SubdomainForm />
+                <div className="mt-8 bg-card shadow-md rounded-lg p-6">
+                  <SubdomainForm />
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </main>
+
+        {/* Footer */}
+        <LayoutFooter>
+          <HomeShareButton />
+        </LayoutFooter>
       </div>
     </FrameProvider>
   );

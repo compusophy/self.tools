@@ -13,27 +13,33 @@ export async function GET() {
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: '#000000',
-          borderRadius: '8px',
+          borderRadius: '12px',
         }}
       >
         <div
           style={{
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
-            fontSize: '12px',
             fontWeight: 'bold',
-            fontFamily: 'monospace',
+            fontFamily: 'system-ui, sans-serif',
+            textAlign: 'center',
           }}
         >
-          self.tools
+          <div style={{ fontSize: '24px', marginBottom: '4px' }}>
+            self
+          </div>
+          <div style={{ fontSize: '20px', color: '#888' }}>
+            .tools
+          </div>
         </div>
       </div>
     ),
     {
-      width: 64,
-      height: 64,
+      width: 128,
+      height: 128,
     }
   );
 } 

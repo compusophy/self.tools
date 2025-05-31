@@ -8,13 +8,6 @@ const FID = 527379;
 const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost:3000';
 const MANIFEST_DOMAIN = 'self.tools'; // Hardcoded for manifest generation
 
-// Hardcoded account association for base domain
-const BASE_DOMAIN_ASSOCIATION = {
-  header: "",
-  payload: "",
-  signature: ""
-};
-
 interface AccountAssociation {
   header: string;
   payload: string;
@@ -23,6 +16,10 @@ interface AccountAssociation {
 
 function getSignatureKey(subdomain: string): string {
   return `signatures/${subdomain}`;
+}
+
+function getBaseSignatureKey(): string {
+  return `signatures/base-domain`;
 }
 
 export async function GET(request: Request) {
@@ -82,10 +79,35 @@ export async function GET(request: Request) {
         accountAssociation = newSignature;
       }
     } else {
-      accountAssociation = BASE_DOMAIN_ASSOCIATION;
+      // Handle base domain - generate proper signature for root domain
+      const existingBaseSignature = await redis.get<AccountAssociation>(getBaseSignatureKey());
+
+      if (existingBaseSignature) {
+        accountAssociation = existingBaseSignature;
+      } else {
+        // Generate and store new signature for base domain
+        const signer = new ethers.Wallet(CUSTODY_PRIVATE_KEY);
+        const custodyAddress = await signer.getAddress();
+        const jfsDomain = MANIFEST_DOMAIN; // Just use the base domain
+        const newBaseSignature = await FarcasterJFS.sign(
+          FID,
+          custodyAddress,
+          { domain: jfsDomain },
+          signer
+        );
+        
+        await redis.set(getBaseSignatureKey(), newBaseSignature);
+        accountAssociation = newBaseSignature;
+      }
     }
   } catch (err) {
     console.error("Error with signature:", err);
+    // Fallback to empty association if signature generation fails
+    accountAssociation = {
+      header: "",
+      payload: "",
+      signature: ""
+    };
   }
 
   const config = {
@@ -114,8 +136,8 @@ export async function GET(request: Request) {
         : `${baseUrl}/opengraph-image.png`,
       buttonTitle: "launch",
       splashImageUrl: subdomain
-        ? `${subdomainUrl}/splash.png`
-        : `${baseUrl}/splash.png`,
+        ? `${subdomainUrl}/icon.png`
+        : `${baseUrl}/icon.png`,
       splashBackgroundColor: "#000000",
       webhookUrl: subdomain 
         ? `${subdomainUrl}/api/webhook`
@@ -130,10 +152,15 @@ export async function GET(request: Request) {
     host,
     subdomain,
     baseDomain,
+    baseUrl,
+    subdomainUrl,
     jfsDomain: subdomain ? `${subdomain}.${MANIFEST_DOMAIN}` : MANIFEST_DOMAIN,
+    iconUrl: config.frame.iconUrl,
+    splashImageUrl: config.frame.splashImageUrl,
     webhookUrl: config.frame.webhookUrl,
     homeUrl: config.frame.homeUrl,
-    url: config.frame.url
+    url: config.frame.url,
+    hasValidAssociation: !!(accountAssociation?.signature)
   });
 
   return Response.json(config);
