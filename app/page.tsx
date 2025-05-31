@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import { SubdomainForm } from './subdomain-form';
 import { protocol, rootDomain } from '@/lib/utils';
 import { FrameProvider } from '@/components/frame-provider';
+import { Button } from '@/components/ui/button';
+import { Settings } from 'lucide-react';
 
 export async function generateMetadata(): Promise<Metadata> {
   const frameData = {
@@ -37,27 +39,30 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage() {
   return (
     <FrameProvider>
-      <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50 to-white p-4 relative">
-        <div className="absolute top-4 right-4">
-          <Link
-            href="/admin"
-            className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
-          >
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4 relative">
+        <Button
+          asChild
+          variant="outline"
+          size="sm"
+          className="fixed top-4 right-4 z-50 shadow-lg"
+        >
+          <Link href="/admin">
+            <Settings className="w-4 h-4 mr-2" />
             Admin
           </Link>
-        </div>
+        </Button>
 
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900">
+            <h1 className="text-4xl font-bold tracking-tight text-foreground">
               {rootDomain}
             </h1>
-            <p className="mt-3 text-lg text-gray-600">
+            <p className="mt-3 text-lg text-muted-foreground">
               Create your own custom subdomain
             </p>
           </div>
 
-          <div className="mt-8 bg-white shadow-md rounded-lg p-6">
+          <div className="mt-8 bg-card shadow-md rounded-lg p-6">
             <SubdomainForm />
           </div>
         </div>

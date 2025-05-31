@@ -19,7 +19,6 @@ type CreateState = {
 function SubdomainInput({ defaultValue }: { defaultValue?: string }) {
   return (
     <div className="space-y-2">
-      <Label htmlFor="subdomain">Subdomain</Label>
       <div className="flex items-center">
         <div className="relative flex-1">
           <Input
@@ -54,7 +53,7 @@ export function SubdomainForm() {
       )}
 
       <Button type="submit" className="w-full" disabled={isPending}>
-        {isPending ? 'Creating...' : 'Create Subdomain'}
+        {isPending ? 'Creating...' : 'Create'}
       </Button>
     </form>
   );

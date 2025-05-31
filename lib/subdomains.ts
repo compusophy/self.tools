@@ -6,7 +6,7 @@ export type SubdomainData = {
     title: string;
     description: string;
     body: string;
-    theme: 'default' | 'dark' | 'colorful' | 'minimal';
+    theme: 'dark' | 'light' | 'color';
     lastModified: number;
   };
   settings: {
@@ -18,21 +18,22 @@ export type SubdomainData = {
 export type SubdomainContent = SubdomainData['content'];
 
 const DEFAULT_CONTENT: SubdomainContent = {
-  title: 'Welcome to Your Subdomain',
-  description: 'This is your custom subdomain page. Click edit to customize it!',
-  body: `# Welcome!
+  title: 'Welcome to Your Page',
+  description: 'Your custom subdomain is ready. Start creating something amazing.',
+  body: `This is your new subdomain page.
 
-This is your new subdomain. You can edit this content using the edit button in the top right corner.
+**Ready to customize?** Click the **Edit** button in the top right corner.
 
-## What can you do?
+---
 
-- Write in **Markdown**
-- Use AI assistance to improve your content
-- Customize the theme
-- Create engaging pages
+### What you can do:
+- Write content in **Markdown**
+- Use **AI assistance** to improve your writing
+- Choose from multiple **themes**
+- Share your page with others
 
-Get started by clicking the edit button!`,
-  theme: 'default',
+Start editing to make this page your own.`,
+  theme: 'dark',
   lastModified: Date.now()
 };
 

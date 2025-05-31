@@ -28,7 +28,7 @@ export function ShareButton({ subdomain, className }: ShareButtonProps) {
       className={className}
     >
       <Share2 className="w-4 h-4 mr-2" />
-      Share to Warpcast
+      Share
     </Button>
   );
 } 

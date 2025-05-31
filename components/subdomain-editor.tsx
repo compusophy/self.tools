@@ -28,10 +28,9 @@ interface SubdomainEditorProps {
 }
 
 const themes = [
-  { id: 'default', name: 'Default', colors: 'bg-gradient-to-b from-blue-50 to-white' },
-  { id: 'dark', name: 'Dark', colors: 'bg-gradient-to-b from-gray-900 to-gray-800' },
-  { id: 'colorful', name: 'Colorful', colors: 'bg-gradient-to-b from-purple-50 via-pink-50 to-orange-50' },
-  { id: 'minimal', name: 'Minimal', colors: 'bg-white' },
+  { id: 'dark', name: 'DARK', colors: 'bg-black text-white' },
+  { id: 'light', name: 'LIGHT', colors: 'bg-white text-black border border-gray-300' },
+  { id: 'color', name: 'COLOR', colors: 'bg-gradient-to-br from-purple-600 to-pink-600 text-white' },
 ] as const;
 
 export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
@@ -110,7 +109,7 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
           className="fixed top-4 right-4 z-50 shadow-lg"
         >
           <Edit3 className="w-4 h-4 mr-2" />
-          Edit Page
+          Edit
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">

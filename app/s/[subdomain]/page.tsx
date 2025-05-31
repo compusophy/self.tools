@@ -77,41 +77,35 @@ export async function generateMetadata({
 // Simple markdown to HTML converter for server-side rendering
 function renderMarkdown(text: string): string {
   return text
-    .replace(/^# (.*$)/gm, '<h1 class="text-4xl font-bold mb-6 text-gray-900">$1</h1>')
-    .replace(/^## (.*$)/gm, '<h2 class="text-3xl font-bold mb-4 text-gray-800">$1</h2>')
-    .replace(/^### (.*$)/gm, '<h3 class="text-2xl font-bold mb-3 text-gray-700">$1</h3>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-    .replace(/^\- (.*$)/gm, '<li class="ml-6 mb-2 list-disc">$1</li>')
-    .replace(/\n\n/g, '</p><p class="mb-4">')
+    .replace(/^# (.*$)/gm, '<h1 class="text-4xl font-bold mb-6 text-white">$1</h1>')
+    .replace(/^## (.*$)/gm, '<h2 class="text-3xl font-bold mb-4 text-white">$1</h2>')
+    .replace(/^### (.*$)/gm, '<h3 class="text-2xl font-bold mb-3 text-white">$1</h3>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-white">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em class="italic text-gray-300">$1</em>')
+    .replace(/^\- (.*$)/gm, '<li class="ml-6 mb-2 list-disc text-gray-300">$1</li>')
+    .replace(/\n\n/g, '</p><p class="mb-4 text-gray-300">')
     .replace(/\n/g, '<br>');
 }
 
 // Theme configurations
 const themeConfigs = {
-  default: {
-    background: 'bg-gradient-to-b from-blue-50 to-white',
-    textPrimary: 'text-gray-900',
+  dark: {
+    background: 'bg-black',
+    textPrimary: 'text-white',
+    textSecondary: 'text-gray-400',
+    accent: 'text-blue-400'
+  },
+  light: {
+    background: 'bg-white',
+    textPrimary: 'text-black',
     textSecondary: 'text-gray-600',
     accent: 'text-blue-600'
   },
-  dark: {
-    background: 'bg-gradient-to-b from-gray-900 to-gray-800',
+  color: {
+    background: 'bg-gradient-to-br from-purple-600 to-pink-600',
     textPrimary: 'text-white',
-    textSecondary: 'text-gray-300',
-    accent: 'text-blue-400'
-  },
-  colorful: {
-    background: 'bg-gradient-to-b from-purple-50 via-pink-50 to-orange-50',
-    textPrimary: 'text-purple-900',
-    textSecondary: 'text-purple-700',
-    accent: 'text-pink-600'
-  },
-  minimal: {
-    background: 'bg-white',
-    textPrimary: 'text-gray-900',
-    textSecondary: 'text-gray-600',
-    accent: 'text-gray-800'
+    textSecondary: 'text-purple-100',
+    accent: 'text-yellow-300'
   }
 };
 
@@ -127,12 +121,12 @@ export default async function SubdomainPage({
     notFound();
   }
 
-  const theme = themeConfigs[subdomainData.content.theme] || themeConfigs.default;
+  const theme = themeConfigs[subdomainData.content.theme as keyof typeof themeConfigs] || themeConfigs.dark;
   const processedBody = renderMarkdown(subdomainData.content.body);
 
   return (
     <FrameProvider subdomain={subdomain}>
-      <div className={`min-h-screen ${theme.background} relative`}>
+      <div className={`h-screen ${theme.background} relative flex flex-col`}>
         {/* Header with home link */}
         <div className="absolute top-4 left-4 z-40">
           <Link
@@ -148,8 +142,8 @@ export default async function SubdomainPage({
           <SubdomainEditor subdomain={subdomain} data={subdomainData} />
         )}
 
-        {/* Main Content */}
-        <div className="container mx-auto px-4 py-16">
+        {/* Main Content - takes up 90% of height */}
+        <div className="flex-1 container mx-auto px-4 py-16 overflow-y-auto">
           <div className="max-w-4xl mx-auto">
             {/* Header Section */}
             <div className="text-center mb-12">
@@ -163,26 +157,15 @@ export default async function SubdomainPage({
 
             {/* Body Content */}
             <div 
-              className={`prose prose-lg max-w-none ${theme.textPrimary}`}
-              dangerouslySetInnerHTML={{ __html: `<p class="mb-4">${processedBody}</p>` }}
+              className={`max-w-none ${theme.textPrimary}`}
+              dangerouslySetInnerHTML={{ __html: `<div class="text-gray-300">${processedBody}</div>` }}
             />
-
-            {/* Footer */}
-            <div className={`mt-16 pt-8 border-t border-gray-200 text-center ${theme.textSecondary}`}>
-              <div className="flex justify-center mb-4">
-                <ShareButton subdomain={subdomain} />
-              </div>
-              <p className="text-sm">
-                Last updated: {new Date(subdomainData.content.lastModified).toLocaleDateString()}
-              </p>
-              <p className="text-xs mt-2">
-                Powered by {rootDomain} • 
-                <Link href={`${protocol}://${rootDomain}`} className={`ml-1 ${theme.accent} hover:underline`}>
-                  Create your own subdomain
-                </Link>
-              </p>
-            </div>
           </div>
+        </div>
+
+        {/* Footer - exactly 10% height */}
+        <div className={`h-[10vh] ${theme.background === 'bg-white' ? 'border-gray-200' : 'border-gray-700'} border-t flex items-center justify-center ${theme.textSecondary}`}>
+          <ShareButton subdomain={subdomain} />
         </div>
       </div>
     </FrameProvider>

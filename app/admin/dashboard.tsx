@@ -22,10 +22,10 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
 
   const getThemeColor = (theme: string) => {
     switch (theme) {
-      case 'dark': return 'bg-gray-800 text-white';
-      case 'colorful': return 'bg-gradient-to-r from-purple-400 to-pink-400 text-white';
-      case 'minimal': return 'bg-white border text-gray-900';
-      default: return 'bg-blue-50 text-blue-900';
+      case 'dark': return 'bg-black text-white';
+      case 'light': return 'bg-white border border-gray-300 text-black';
+      case 'color': return 'bg-gradient-to-r from-purple-600 to-pink-600 text-white';
+      default: return 'bg-black text-white';
     }
   };
 
@@ -72,11 +72,11 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
       <CardContent className="space-y-4">
         {/* Subdomain Stats */}
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Calendar className="w-4 h-4" />
             <span>Created: {formatDate(subdomain.createdAt)}</span>
           </div>
-          <div className="flex items-center gap-2 text-gray-600">
+          <div className="flex items-center gap-2 text-muted-foreground">
             <Palette className="w-4 h-4" />
             <span>Theme: {subdomain.theme || 'default'}</span>
           </div>
@@ -96,10 +96,10 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
 
         {/* Content Preview */}
         {showPreview && (
-          <div className="p-4 bg-gray-50 rounded-lg border">
+          <div className="p-4 bg-muted rounded-lg border">
             <div className="space-y-2">
-              <h4 className="font-semibold text-sm text-gray-700">Content Preview:</h4>
-              <div className="text-xs text-gray-600">
+              <h4 className="font-semibold text-sm text-foreground">Content Preview:</h4>
+              <div className="text-xs text-muted-foreground">
                 <p><strong>Description:</strong> {subdomain.description || 'No description'}</p>
                 <p><strong>Body Preview:</strong> {(subdomain.body || '').substring(0, 150)}...</p>
               </div>
@@ -165,10 +165,9 @@ export function Dashboard({ subdomains }: DashboardProps) {
     published: subdomains.filter(s => s.isPublished).length,
     drafts: subdomains.filter(s => !s.isPublished).length,
     themes: {
-      default: subdomains.filter(s => (s.theme || 'default') === 'default').length,
       dark: subdomains.filter(s => s.theme === 'dark').length,
-      colorful: subdomains.filter(s => s.theme === 'colorful').length,
-      minimal: subdomains.filter(s => s.theme === 'minimal').length,
+      light: subdomains.filter(s => s.theme === 'light').length,
+      color: subdomains.filter(s => s.theme === 'color').length,
     }
   };
 
@@ -179,25 +178,25 @@ export function Dashboard({ subdomains }: DashboardProps) {
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-sm text-gray-600">Total Subdomains</p>
+            <p className="text-sm text-muted-foreground">Total Subdomains</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-green-600">{stats.published}</div>
-            <p className="text-sm text-gray-600">Published</p>
+            <p className="text-sm text-muted-foreground">Published</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <div className="text-2xl font-bold text-yellow-600">{stats.drafts}</div>
-            <p className="text-sm text-gray-600">Drafts</p>
+            <p className="text-sm text-muted-foreground">Drafts</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="text-2xl font-bold text-blue-600">{stats.themes.default + stats.themes.dark + stats.themes.colorful + stats.themes.minimal}</div>
-            <p className="text-sm text-gray-600">Themed Pages</p>
+            <div className="text-2xl font-bold text-blue-600">{stats.themes.dark + stats.themes.light + stats.themes.color}</div>
+            <p className="text-sm text-muted-foreground">Themed Pages</p>
           </CardContent>
         </Card>
       </div>
@@ -210,7 +209,7 @@ export function Dashboard({ subdomains }: DashboardProps) {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="max-w-md"
         />
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-muted-foreground">
           Showing {filteredSubdomains.length} of {subdomains.length} subdomains
         </p>
       </div>
@@ -220,11 +219,11 @@ export function Dashboard({ subdomains }: DashboardProps) {
         {filteredSubdomains.length === 0 ? (
           <Card>
             <CardContent className="p-8 text-center">
-              <p className="text-gray-500">
+              <p className="text-muted-foreground">
                 {searchTerm ? 'No subdomains match your search.' : 'No subdomains created yet.'}
               </p>
               {!searchTerm && (
-                <p className="text-sm text-gray-400 mt-2">
+                <p className="text-sm text-muted-foreground/60 mt-2">
                   Create your first subdomain from the main page!
                 </p>
               )}
