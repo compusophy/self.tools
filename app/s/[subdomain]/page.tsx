@@ -79,37 +79,15 @@ export async function generateMetadata({
 // Simple markdown to HTML converter for server-side rendering
 function renderMarkdown(text: string): string {
   return text
-    .replace(/^# (.*$)/gm, '<h1 class="text-4xl font-bold mb-6 text-white">$1</h1>')
-    .replace(/^## (.*$)/gm, '<h2 class="text-3xl font-bold mb-4 text-white">$1</h2>')
-    .replace(/^### (.*$)/gm, '<h3 class="text-2xl font-bold mb-3 text-white">$1</h3>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-white">$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em class="italic text-gray-300">$1</em>')
-    .replace(/^\- (.*$)/gm, '<li class="ml-6 mb-2 list-disc text-gray-300">$1</li>')
-    .replace(/\n\n/g, '</p><p class="mb-4 text-gray-300">')
+    .replace(/^# (.*$)/gm, '<h1 class="text-4xl font-bold mb-6 text-foreground">$1</h1>')
+    .replace(/^## (.*$)/gm, '<h2 class="text-3xl font-bold mb-4 text-foreground">$1</h2>')
+    .replace(/^### (.*$)/gm, '<h3 class="text-2xl font-bold mb-3 text-foreground">$1</h3>')
+    .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-foreground">$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em class="italic text-muted-foreground">$1</em>')
+    .replace(/^\- (.*$)/gm, '<li class="ml-6 mb-2 list-disc text-muted-foreground">$1</li>')
+    .replace(/\n\n/g, '</p><p class="mb-4 text-muted-foreground">')
     .replace(/\n/g, '<br>');
 }
-
-// Theme configurations
-const themeConfigs = {
-  dark: {
-    background: 'bg-black',
-    textPrimary: 'text-white',
-    textSecondary: 'text-gray-400',
-    accent: 'text-blue-400'
-  },
-  light: {
-    background: 'bg-white',
-    textPrimary: 'text-black',
-    textSecondary: 'text-gray-600',
-    accent: 'text-blue-600'
-  },
-  color: {
-    background: 'bg-gradient-to-br from-purple-600 to-pink-600',
-    textPrimary: 'text-white',
-    textSecondary: 'text-purple-100',
-    accent: 'text-yellow-300'
-  }
-};
 
 export default async function SubdomainPage({
   params
@@ -123,19 +101,16 @@ export default async function SubdomainPage({
     notFound();
   }
 
-  const theme = themeConfigs[subdomainData.content.theme as keyof typeof themeConfigs] || themeConfigs.dark;
   const processedBody = renderMarkdown(subdomainData.content.body);
 
   return (
     <FrameProvider subdomain={subdomain}>
-      <div className={`min-h-screen ${theme.background} flex flex-col`}>
+      <div className="min-h-screen bg-background flex flex-col">
         {/* Header */}
         <LayoutHeader 
           showHomeLink={true}
           showEditButton={subdomainData.settings.allowEditing}
           editButton={<SubdomainEditor subdomain={subdomain} data={subdomainData} />}
-          theme={theme}
-          variant="themed"
         />
 
         {/* Main Content */}
@@ -144,25 +119,25 @@ export default async function SubdomainPage({
             <div className="max-w-4xl mx-auto">
               {/* Header Section */}
               <div className="text-center mb-12">
-                <h1 className={`text-5xl font-bold mb-6 ${theme.textPrimary}`}>
+                <h1 className="text-5xl font-bold mb-6 text-foreground">
                   {subdomainData.content.title}
                 </h1>
-                <p className={`text-xl ${theme.textSecondary} max-w-2xl mx-auto`}>
+                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                   {subdomainData.content.description}
                 </p>
               </div>
 
               {/* Body Content */}
               <div 
-                className={`max-w-none ${theme.textPrimary}`}
-                dangerouslySetInnerHTML={{ __html: `<div class="text-gray-300">${processedBody}</div>` }}
+                className="max-w-none text-foreground"
+                dangerouslySetInnerHTML={{ __html: `<div class="text-muted-foreground">${processedBody}</div>` }}
               />
             </div>
           </div>
         </main>
 
         {/* Footer */}
-        <LayoutFooter variant="themed" theme={theme}>
+        <LayoutFooter>
           <ShareButton subdomain={subdomain} />
         </LayoutFooter>
       </div>
