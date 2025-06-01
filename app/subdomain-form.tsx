@@ -26,11 +26,11 @@ function SubdomainInput({ defaultValue }: { defaultValue?: string }) {
             name="subdomain"
             placeholder="your-subdomain"
             defaultValue={defaultValue}
-            className="w-full rounded-r-none focus:z-10"
+            className="w-full rounded-none focus:z-10"
             required
           />
         </div>
-        <span className="bg-gray-100 px-3 border border-l-0 border-input rounded-r-md text-gray-500 min-h-[36px] flex items-center">
+        <span className="bg-gray-100 px-3 border border-l-0 border-input rounded-none text-gray-500 min-h-[36px] flex items-center">
           .{rootDomain}
         </span>
       </div>

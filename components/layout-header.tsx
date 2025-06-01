@@ -95,7 +95,7 @@ export function LayoutHeader({
             >
               <Link href="/admin">
                 <Settings className="w-4 h-4 mr-2" />
-                Admin
+                Settings
               </Link>
             </Button>
           )}

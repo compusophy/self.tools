@@ -63,7 +63,7 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
             <Badge variant={subdomain.isPublished ? "default" : "secondary"}>
               {subdomain.isPublished ? 'Published' : 'Draft'}
             </Badge>
-            <div className={`w-3 h-3 rounded-full ${getThemeColor(subdomain.theme || 'default')}`} 
+            <div className={`w-3 h-3 rounded-none ${getThemeColor(subdomain.theme || 'default')}`} 
                  title={`Theme: ${subdomain.theme || 'default'}`} />
           </div>
         </div>
@@ -96,7 +96,7 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
 
         {/* Content Preview */}
         {showPreview && (
-          <div className="p-4 bg-muted rounded-lg border">
+          <div className="p-4 bg-muted rounded-none border">
             <div className="space-y-2">
               <h4 className="font-semibold text-sm text-foreground">Content Preview:</h4>
               <div className="text-xs text-muted-foreground">
@@ -143,7 +143,7 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
         </div>
 
         {deleteState?.success && deleteState.success !== '' && (
-          <div className="text-sm text-green-600 bg-green-50 p-2 rounded">
+          <div className="text-sm text-green-600 bg-green-50 p-2 rounded-none">
             {deleteState.success}
           </div>
         )}

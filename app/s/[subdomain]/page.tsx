@@ -105,7 +105,7 @@ export default async function SubdomainPage({
 
   return (
     <FrameProvider subdomain={subdomain}>
-      <div className="min-h-screen bg-background flex flex-col">
+      <div className="flex min-h-screen flex-col bg-background">
         {/* Header */}
         <LayoutHeader 
           showHomeLink={true}
@@ -115,24 +115,28 @@ export default async function SubdomainPage({
         />
 
         {/* Main Content */}
-        <main className="flex-1 py-16 overflow-y-auto">
+        <main className="flex-1 flex items-center justify-center py-16">
           <div className="container mx-auto px-4 max-w-7xl">
-            <div className="max-w-4xl mx-auto">
-              {/* Header Section */}
-              <div className="text-center mb-12">
-                <h1 className="text-5xl font-bold mb-6 text-foreground">
-                  {subdomainData.content.title}
-                </h1>
-                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                  {subdomainData.content.description}
-                </p>
-              </div>
+            <div className="flex justify-center">
+              <div className="w-full max-w-4xl space-y-8">
+                {/* Header Section */}
+                <div className="text-center">
+                  <h1 className="text-5xl font-bold mb-6 text-foreground">
+                    {subdomainData.content.title}
+                  </h1>
+                  <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                    {subdomainData.content.description}
+                  </p>
+                </div>
 
-              {/* Body Content */}
-              <div 
-                className="max-w-none text-foreground"
-                dangerouslySetInnerHTML={{ __html: `<div class="text-muted-foreground">${processedBody}</div>` }}
-              />
+                {/* Body Content */}
+                <div className="text-center">
+                  <div 
+                    className="text-muted-foreground"
+                    dangerouslySetInnerHTML={{ __html: processedBody }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </main>

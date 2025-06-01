@@ -18,21 +18,9 @@ export type SubdomainData = {
 export type SubdomainContent = SubdomainData['content'];
 
 const DEFAULT_CONTENT: SubdomainContent = {
-  title: 'Welcome to Your Page',
-  description: 'Your custom subdomain is ready. Start creating something amazing.',
-  body: `This is your new subdomain page.
-
-**Ready to customize?** Click the **Edit** button in the top right corner.
-
----
-
-### What you can do:
-- Write content in **Markdown**
-- Use **AI assistance** to improve your writing
-- Choose from multiple **themes**
-- Share your page with others
-
-Start editing to make this page your own.`,
+  title: '',
+  description: 'Ready to customize.',
+  body: ``,
   theme: 'dark',
   lastModified: Date.now()
 };
@@ -67,7 +55,7 @@ export async function createSubdomain(subdomain: string): Promise<boolean> {
     createdAt: Date.now(),
     content: {
       ...DEFAULT_CONTENT,
-      title: `Welcome to ${sanitizedSubdomain}`
+      title: sanitizedSubdomain
     },
     settings: DEFAULT_SETTINGS
   };

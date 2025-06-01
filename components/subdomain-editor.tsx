@@ -105,7 +105,7 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
         </div>
 
         {/* Scrollable Content Area with proper margins */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide">
+        <div className="flex-1 overflow-y-auto scrollbar-hide border-l border-r">
           <div className="container mx-auto px-4 py-8 max-w-4xl">
             <div className="space-y-8">
               {/* Theme Selector */}
@@ -117,7 +117,7 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
                       key={theme.id}
                       type="button"
                       onClick={() => setFormData(prev => ({ ...prev, theme: theme.id }))}
-                      className={`relative p-4 rounded-lg transition-all duration-200 ${theme.colors} ${
+                      className={`relative p-4 transition-all duration-200 ${theme.colors} ${
                         formData.theme === theme.id 
                           ? 'ring-2 ring-blue-500 ring-offset-2 scale-105' 
                           : 'hover:scale-102 hover:ring-1 hover:ring-gray-300 hover:ring-offset-1'
@@ -125,7 +125,7 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
                     >
                       {/* Selected indicator */}
                       {formData.theme === theme.id && (
-                        <div className="absolute -top-1 -right-1 bg-blue-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-medium">
+                        <div className="absolute -top-1 -right-1 bg-blue-500 text-white w-5 h-5 flex items-center justify-center text-xs font-medium">
                           ✓
                         </div>
                       )}
@@ -157,6 +157,7 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
                             value={aiPrompt}
                             onChange={(e) => setAiPrompt(e.target.value)}
                             rows={2}
+                            className="rounded-none"
                           />
                           <Button
                             onClick={() => handleAIImprove('title')}
@@ -175,7 +176,7 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
                     value={formData.title}
                     onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                     placeholder="Page title"
-                    className="text-base"
+                    className="text-base rounded-none"
                   />
                 </div>
 
@@ -198,6 +199,7 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
                             value={aiPrompt}
                             onChange={(e) => setAiPrompt(e.target.value)}
                             rows={2}
+                            className="rounded-none"
                           />
                           <Button
                             onClick={() => handleAIImprove('description')}
@@ -217,7 +219,7 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Page description"
                     rows={2}
-                    className="text-base"
+                    className="text-base rounded-none"
                   />
                 </div>
 
@@ -240,6 +242,7 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
                             value={aiPrompt}
                             onChange={(e) => setAiPrompt(e.target.value)}
                             rows={3}
+                            className="rounded-none"
                           />
                           <Button
                             onClick={() => handleAIImprove('body')}
@@ -259,7 +262,7 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
                     onChange={(e) => setFormData(prev => ({ ...prev, body: e.target.value }))}
                     placeholder="Write your content here (Markdown supported)"
                     rows={12}
-                    className="text-base"
+                    className="text-base rounded-none"
                   />
                 </div>
               </div>

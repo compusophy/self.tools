@@ -60,7 +60,7 @@ export default async function HomePage() {
                   </p>
                 </div>
 
-                <div className="bg-card shadow-md rounded-lg p-4">
+                <div className="bg-card shadow-md rounded-none p-4">
                   <SubdomainForm />
                 </div>
               </div>
