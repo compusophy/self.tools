@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { deleteSubdomainAction } from '@/app/actions';
 import { type getAllSubdomains } from '@/lib/subdomains';
 import { rootDomain, protocol } from '@/lib/utils';
-import { ExternalLink, Trash2, Eye, Calendar, Palette } from 'lucide-react';
+import { ExternalLink, Trash2, Eye, Calendar, Palette, Rocket } from 'lucide-react';
 import { useActionState, useState } from 'react';
+import { sdk } from '@farcaster/frame-sdk';
 
 type SubdomainInfo = Awaited<ReturnType<typeof getAllSubdomains>>[0];
 
@@ -37,6 +38,21 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
       hour: '2-digit',
       minute: '2-digit'
     });
+  };
+
+  const handleLaunchFrame = async () => {
+    try {
+      const subdomainUrl = `${protocol}://${subdomain.subdomain}.${rootDomain}/`;
+      const encodedUrl = encodeURIComponent(subdomainUrl);
+      const farcasterLaunchUrl = `https://farcaster.xyz/?launchFrameUrl=${encodedUrl}`;
+      
+      await sdk.actions.openUrl(farcasterLaunchUrl);
+    } catch (error) {
+      console.error('Error launching frame:', error);
+      // Fallback to direct navigation
+      const subdomainUrl = `${protocol}://${subdomain.subdomain}.${rootDomain}/`;
+      window.open(subdomainUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
@@ -110,19 +126,13 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
         {/* Actions */}
         <div className="flex gap-2 pt-2 border-t">
           <Button
-            asChild
+            onClick={handleLaunchFrame}
             variant="outline"
             size="sm"
             className="flex-1"
           >
-            <a
-              href={`${protocol}://${subdomain.subdomain}.${rootDomain}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ExternalLink className="w-4 h-4 mr-2" />
-              View Site
-            </a>
+            <Rocket className="w-4 h-4 mr-2" />
+            Launch
           </Button>
           
           <form action={deleteAction}>
