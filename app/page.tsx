@@ -49,7 +49,7 @@ export default async function HomePage() {
         {/* Main Content */}
         <main className="flex-1 flex items-center justify-center py-16">
           <div className="container mx-auto px-4 max-w-7xl">
-            <div className="flex items-center justify-center">
+            <div className="flex justify-center">
               <div className="w-full max-w-md space-y-8">
                 <div className="text-center">
                   <h1 className="text-4xl font-bold tracking-tight text-foreground">
@@ -60,7 +60,7 @@ export default async function HomePage() {
                   </p>
                 </div>
 
-                <div className="mt-8 bg-card shadow-md rounded-lg p-6">
+                <div className="bg-card shadow-md rounded-lg p-4">
                   <SubdomainForm />
                 </div>
               </div>

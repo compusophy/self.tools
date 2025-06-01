@@ -109,6 +109,7 @@ export default async function SubdomainPage({
         {/* Header */}
         <LayoutHeader 
           showHomeLink={true}
+          homeButtonStyle="button"
           showEditButton={subdomainData.settings.allowEditing}
           editButton={<SubdomainEditor subdomain={subdomain} data={subdomainData} />}
         />
