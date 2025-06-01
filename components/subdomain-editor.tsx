@@ -11,19 +11,21 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from '@/components/ui/dialog';
-import { 
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Edit3, Sparkles, Save, Palette } from 'lucide-react';
-import { updateSubdomainContentAction, improveContentWithAIAction } from '@/app/actions';
+import { Edit3, Save, X } from 'lucide-react';
+import { updateSubdomainContentAction } from '@/app/actions';
 import { type SubdomainData } from '@/lib/subdomains';
 
 interface SubdomainEditorProps {
   subdomain: string;
   data: SubdomainData;
+  theme?: string;
+  themeStyles?: {
+    container: string;
+    borderColor: string;
+  };
+  lightThemeButtonClass?: string;
 }
 
 const themes = [
@@ -32,10 +34,9 @@ const themes = [
   { id: 'color', name: 'COLOR', colors: 'bg-gradient-to-br from-purple-600 to-pink-600 text-white' },
 ] as const;
 
-export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
+export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, lightThemeButtonClass = '' }: SubdomainEditorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [isAILoading, setIsAILoading] = useState(false);
   
   const [formData, setFormData] = useState({
     title: data.content.title,
@@ -44,7 +45,34 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
     theme: data.content.theme,
   });
 
-  const [aiPrompt, setAiPrompt] = useState('');
+  const borderColor = themeStyles?.borderColor || 'border-border';
+  
+  // Get modal background and text colors based on theme
+  const getModalStyling = () => {
+    switch (theme) {
+      case 'light':
+        return {
+          background: 'bg-white text-black',
+          labelColor: 'text-black',
+          inputColor: 'text-black bg-white border-gray-300'
+        };
+      case 'color':
+        return {
+          background: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 text-white',
+          labelColor: 'text-white',
+          inputColor: 'text-white bg-white/10 border-white/30 placeholder-white/60'
+        };
+      case 'dark':
+      default:
+        return {
+          background: 'bg-black text-white',
+          labelColor: 'text-white',
+          inputColor: 'text-white bg-gray-800 border-gray-600 placeholder-gray-400'
+        };
+    }
+  };
+
+  const modalStyling = getModalStyling();
 
   const handleSave = () => {
     const form = new FormData();
@@ -61,56 +89,41 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
     });
   };
 
-  const handleAIImprove = async (contentType: 'title' | 'description' | 'body') => {
-    setIsAILoading(true);
-    const content = formData[contentType];
-    
-    const form = new FormData();
-    form.append('subdomain', subdomain);
-    form.append('content', content);
-    form.append('prompt', aiPrompt || `Improve this ${contentType} to be more engaging and professional`);
-
-    try {
-      const result = await improveContentWithAIAction({}, form);
-      if (result.success && result.improvedContent) {
-        setFormData(prev => ({
-          ...prev,
-          [contentType]: result.improvedContent
-        }));
-        setAiPrompt('');
-      }
-    } catch (error) {
-      console.error('AI improvement failed:', error);
-    } finally {
-      setIsAILoading(false);
-    }
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
           variant="outline"
           size="sm"
-          className="shadow-lg"
+          className={`shadow-lg cursor-pointer ${lightThemeButtonClass}`}
         >
           <Edit3 className="w-4 h-4 mr-2" />
           Edit
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl h-screen flex flex-col p-0 gap-0 !border-0">
-        {/* Header */}
-        <div className="flex-shrink-0 px-4 py-4 border-b border">
-          <DialogTitle className="text-xl font-bold">Edit {subdomain}.self.tools</DialogTitle>
+      <DialogContent className={`max-w-4xl h-screen flex flex-col p-0 gap-0 !border-0 [&>button]:hidden ${modalStyling.background}`}>
+        {/* Header - with left/right/bottom borders */}
+        <div className={`flex-shrink-0 py-4 px-4 border-l border-r border-b ${borderColor} flex items-center justify-between`}>
+          <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor}`}>Edit {subdomain}</DialogTitle>
+          <DialogClose asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className={`shadow-lg cursor-pointer ${lightThemeButtonClass}`}
+            >
+              <X className="w-4 h-4 mr-2" />
+              Cancel
+            </Button>
+          </DialogClose>
         </div>
 
-        {/* Scrollable Content Area with proper margins */}
-        <div className="flex-1 overflow-y-auto scrollbar-hide border-l border-r">
+        {/* Scrollable Content Area with left/right borders only */}
+        <div className={`flex-1 overflow-y-auto scrollbar-hide border-l border-r ${borderColor}`}>
           <div className="container mx-auto px-4 py-8 max-w-4xl">
             <div className="space-y-8">
               {/* Theme Selector */}
               <div className="space-y-4">
-                <Label className="text-base font-medium">Theme</Label>
+                <Label className={`text-base font-medium ${modalStyling.labelColor}`}>Theme</Label>
                 <div className="grid grid-cols-3 gap-4">
                   {themes.map((theme) => (
                     <button
@@ -140,129 +153,26 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
               <div className="space-y-8">
                 {/* Title */}
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="title" className="text-base font-medium">Title</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <Sparkles className="w-4 h-4 mr-2" />
-                          AI Improve
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80">
-                        <div className="space-y-4">
-                          <Label>Custom prompt (optional)</Label>
-                          <Textarea
-                            placeholder="e.g., Make it more catchy and professional"
-                            value={aiPrompt}
-                            onChange={(e) => setAiPrompt(e.target.value)}
-                            rows={2}
-                            className="rounded-none"
-                          />
-                          <Button
-                            onClick={() => handleAIImprove('title')}
-                            disabled={isAILoading}
-                            size="sm"
-                            className="w-full"
-                          >
-                            {isAILoading ? 'Improving...' : 'Improve Title'}
-                          </Button>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
+                  <Label htmlFor="title" className={`text-base font-medium ${modalStyling.labelColor}`}>Title</Label>
                   <Input
                     id="title"
                     value={formData.title}
                     onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                     placeholder="Page title"
-                    className="text-base rounded-none"
+                    className={`text-base rounded-none ${modalStyling.inputColor}`}
                   />
                 </div>
 
                 {/* Description */}
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="description" className="text-base font-medium">Description</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <Sparkles className="w-4 h-4 mr-2" />
-                          AI Improve
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80">
-                        <div className="space-y-4">
-                          <Label>Custom prompt (optional)</Label>
-                          <Textarea
-                            placeholder="e.g., Make it more compelling and SEO-friendly"
-                            value={aiPrompt}
-                            onChange={(e) => setAiPrompt(e.target.value)}
-                            rows={2}
-                            className="rounded-none"
-                          />
-                          <Button
-                            onClick={() => handleAIImprove('description')}
-                            disabled={isAILoading}
-                            size="sm"
-                            className="w-full"
-                          >
-                            {isAILoading ? 'Improving...' : 'Improve Description'}
-                          </Button>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
+                  <Label htmlFor="description" className={`text-base font-medium ${modalStyling.labelColor}`}>Description</Label>
                   <Textarea
                     id="description"
                     value={formData.description}
                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Page description"
-                    rows={2}
-                    className="text-base rounded-none"
-                  />
-                </div>
-
-                {/* Body Content */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label htmlFor="body" className="text-base font-medium">Content (Markdown supported)</Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <Sparkles className="w-4 h-4 mr-2" />
-                          AI Improve
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80">
-                        <div className="space-y-4">
-                          <Label>Custom prompt (optional)</Label>
-                          <Textarea
-                            placeholder="e.g., Add more sections and make it more engaging"
-                            value={aiPrompt}
-                            onChange={(e) => setAiPrompt(e.target.value)}
-                            rows={3}
-                            className="rounded-none"
-                          />
-                          <Button
-                            onClick={() => handleAIImprove('body')}
-                            disabled={isAILoading}
-                            size="sm"
-                            className="w-full"
-                          >
-                            {isAILoading ? 'Improving...' : 'Improve Content'}
-                          </Button>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <Textarea
-                    id="body"
-                    value={formData.body}
-                    onChange={(e) => setFormData(prev => ({ ...prev, body: e.target.value }))}
-                    placeholder="Write your content here (Markdown supported)"
-                    rows={12}
-                    className="text-base rounded-none"
+                    rows={3}
+                    className={`text-base rounded-none ${modalStyling.inputColor}`}
                   />
                 </div>
               </div>
@@ -270,12 +180,14 @@ export function SubdomainEditor({ subdomain, data }: SubdomainEditorProps) {
           </div>
         </div>
 
-        {/* Clean Footer - matches subdomain page exactly */}
-        <div className="py-4 border-t border flex items-center justify-center">
-          <Button onClick={handleSave} disabled={isPending} size="sm" variant="outline" className="shadow-lg">
-            <Save className="w-4 h-4 mr-2" />
-            {isPending ? 'Saving...' : 'Save'}
-          </Button>
+        {/* Footer - with left/right/top borders */}
+        <div className={`flex-shrink-0 py-4 border-l border-r border-t ${borderColor}`}>
+          <div className="flex items-center justify-center">
+            <Button onClick={handleSave} disabled={isPending} size="sm" variant="outline" className={`shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
+              <Save className="w-4 h-4 mr-2" />
+              {isPending ? 'Saving...' : 'Save'}
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

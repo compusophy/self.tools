@@ -103,15 +103,52 @@ export default async function SubdomainPage({
 
   const processedBody = renderMarkdown(subdomainData.content.body);
 
+  // Get theme styles
+  const getThemeStyles = (theme: string) => {
+    switch (theme) {
+      case 'light':
+        return {
+          container: 'bg-white text-black min-h-screen',
+          header: { textPrimary: 'text-black', textSecondary: 'text-gray-600', background: 'bg-white' },
+          footer: { background: 'bg-white' },
+          borderColor: 'border-gray-300'
+        };
+      case 'color':
+        return {
+          container: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 text-white min-h-screen',
+          header: { textPrimary: 'text-white', textSecondary: 'text-white/70', background: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500' },
+          footer: { background: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500' },
+          borderColor: 'border-white/30'
+        };
+      case 'dark':
+      default:
+        return {
+          container: 'bg-black text-white min-h-screen',
+          header: { textPrimary: 'text-white', textSecondary: 'text-gray-400', background: 'bg-black' },
+          footer: { background: 'bg-black' },
+          borderColor: 'border-white/20'
+        };
+    }
+  };
+
+  const themeStyles = getThemeStyles(subdomainData.content.theme);
+  
+  // Custom class for light theme to fix button hover text
+  const lightThemeButtonClass = subdomainData.content.theme === 'light' ? 'light-theme-button' : '';
+
   return (
     <FrameProvider subdomain={subdomain}>
-      <div className="flex min-h-screen flex-col bg-background">
+      <div className={`flex flex-col ${themeStyles.container}`}>
         {/* Header */}
         <LayoutHeader 
           showHomeLink={true}
           homeButtonStyle="button"
           showEditButton={subdomainData.settings.allowEditing}
-          editButton={<SubdomainEditor subdomain={subdomain} data={subdomainData} />}
+          editButton={<SubdomainEditor subdomain={subdomain} data={subdomainData} theme={subdomainData.content.theme} themeStyles={themeStyles} lightThemeButtonClass={lightThemeButtonClass} />}
+          theme={themeStyles.header}
+          variant="themed"
+          borderColor={themeStyles.borderColor}
+          lightThemeButtonClass={lightThemeButtonClass}
         />
 
         {/* Main Content */}
@@ -121,10 +158,10 @@ export default async function SubdomainPage({
               <div className="w-full max-w-4xl space-y-8">
                 {/* Header Section */}
                 <div className="text-center">
-                  <h1 className="text-5xl font-bold mb-6 text-foreground">
+                  <h1 className={`text-5xl font-bold mb-6 ${subdomainData.content.theme === 'light' ? 'text-black' : 'text-white'}`}>
                     {subdomainData.content.title}
                   </h1>
-                  <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                  <p className={`text-xl max-w-2xl mx-auto ${subdomainData.content.theme === 'light' ? 'text-gray-600' : subdomainData.content.theme === 'color' ? 'text-white/80' : 'text-gray-300'}`}>
                     {subdomainData.content.description}
                   </p>
                 </div>
@@ -132,7 +169,7 @@ export default async function SubdomainPage({
                 {/* Body Content */}
                 <div className="text-center">
                   <div 
-                    className="text-muted-foreground"
+                    className={`${subdomainData.content.theme === 'light' ? 'text-gray-700' : subdomainData.content.theme === 'color' ? 'text-white/90' : 'text-gray-300'}`}
                     dangerouslySetInnerHTML={{ __html: processedBody }}
                   />
                 </div>
@@ -142,8 +179,8 @@ export default async function SubdomainPage({
         </main>
 
         {/* Footer */}
-        <LayoutFooter>
-          <ShareButton subdomain={subdomain} />
+        <LayoutFooter variant="themed" theme={themeStyles.footer} borderColor={themeStyles.borderColor}>
+          <ShareButton subdomain={subdomain} lightThemeButtonClass={lightThemeButtonClass} />
         </LayoutFooter>
       </div>
     </FrameProvider>

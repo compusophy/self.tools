@@ -7,14 +7,20 @@ interface LayoutFooterProps {
     background?: string;
   };
   size?: 'default' | 'large';
+  borderColor?: string;
 }
 
-export function LayoutFooter({ children, variant = 'default', theme, size = 'default' }: LayoutFooterProps) {
+export function LayoutFooter({ children, variant = 'default', theme, size = 'default', borderColor }: LayoutFooterProps) {
   const paddingClass = size === 'large' ? 'py-6' : 'py-4';
   
+  const getBorderClass = () => {
+    if (borderColor) return borderColor;
+    return variant === 'themed' ? 'border-white/20' : 'border-border';
+  };
+  
   const footerClasses = variant === 'themed' && theme?.background
-    ? `flex-shrink-0 ${paddingClass} border-t border-white/20`
-    : `flex-shrink-0 ${paddingClass} border-t border-border`;
+    ? `flex-shrink-0 ${paddingClass} border-t ${getBorderClass()}`
+    : `flex-shrink-0 ${paddingClass} border-t ${getBorderClass()}`;
 
   return (
     <footer className={footerClasses}>

@@ -26,11 +26,11 @@ export function HomeShareButton() {
   };
 
   return (
-    <Button 
+    <Button
       onClick={handleShare}
-      variant="outline" 
-      size="sm" 
-      className="shadow-lg"
+      variant="outline"
+      size="sm"
+      className="shadow-lg cursor-pointer"
     >
       <Share2 className="w-4 h-4 mr-2" />
       Share

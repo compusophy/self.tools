@@ -17,6 +17,14 @@ type CreateState = {
 };
 
 function SubdomainInput({ defaultValue }: { defaultValue?: string }) {
+  const [value, setValue] = useState(defaultValue || '');
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Sanitize input: lowercase and only allow letters, numbers, and hyphens
+    const sanitized = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    setValue(sanitized);
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex items-center">
@@ -25,7 +33,8 @@ function SubdomainInput({ defaultValue }: { defaultValue?: string }) {
             id="subdomain"
             name="subdomain"
             placeholder="your-subdomain"
-            defaultValue={defaultValue}
+            value={value}
+            onChange={handleInputChange}
             className="w-full rounded-none focus:z-10"
             required
           />
@@ -52,7 +61,7 @@ export function SubdomainForm() {
         <div className="text-sm text-red-500">{state.error}</div>
       )}
 
-      <Button type="submit" className="w-full" disabled={isPending}>
+      <Button type="submit" className="w-full cursor-pointer" disabled={isPending}>
         {isPending ? 'Creating...' : 'Create'}
       </Button>
     </form>

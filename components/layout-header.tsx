@@ -18,6 +18,9 @@ interface LayoutHeaderProps {
   variant?: 'default' | 'themed';
   size?: 'default' | 'large';
   homeButtonStyle?: 'link' | 'button';
+  borderColor?: string;
+  buttonClass?: string;
+  lightThemeButtonClass?: string;
 }
 
 export function LayoutHeader({ 
@@ -29,17 +32,35 @@ export function LayoutHeader({
   theme,
   variant = 'default',
   size = 'default',
-  homeButtonStyle = 'link'
+  homeButtonStyle = 'link',
+  borderColor,
+  buttonClass,
+  lightThemeButtonClass = ''
 }: LayoutHeaderProps) {
   const paddingClass = size === 'large' ? 'py-6' : 'py-4';
   
+  const getBorderClass = () => {
+    if (borderColor) return borderColor;
+    return variant === 'themed' ? 'border-white/20' : 'border-border';
+  };
+  
   const headerClasses = variant === 'themed' && theme?.background
-    ? `flex-shrink-0 ${paddingClass} px-4 border-b border-white/20`
-    : `flex-shrink-0 ${paddingClass} px-4 border-b border-border`;
+    ? `flex-shrink-0 ${paddingClass} px-4 border-b ${getBorderClass()}`
+    : `flex-shrink-0 ${paddingClass} px-4 border-b ${getBorderClass()}`;
 
   const linkClasses = variant === 'themed' 
     ? `text-sm ${theme?.textSecondary || 'text-white/70'} hover:${theme?.textPrimary || 'text-white'} transition-colors`
     : `text-sm text-muted-foreground hover:text-foreground transition-colors`;
+
+  // Use custom button class only in themed mode, otherwise use original home page styling
+  const getButtonStyling = () => {
+    if (variant === 'themed' && buttonClass) {
+      return { className: `${buttonClass} cursor-pointer` };
+    }
+    return { variant: 'outline' as const, className: `shadow-lg cursor-pointer ${lightThemeButtonClass}` };
+  };
+
+  const buttonStyling = getButtonStyling();
 
   return (
     <header className={headerClasses}>
@@ -50,9 +71,8 @@ export function LayoutHeader({
             homeButtonStyle === 'button' ? (
               <Button
                 asChild
-                variant={variant === 'themed' ? 'secondary' : 'outline'}
                 size="sm"
-                className="shadow-lg"
+                {...buttonStyling}
               >
                 <Link href={`${protocol}://${rootDomain}`}>
                   <ArrowLeft className="w-4 h-4 mr-2" />
@@ -72,9 +92,8 @@ export function LayoutHeader({
           {showSourceButton && (
             <Button
               asChild
-              variant={variant === 'themed' ? 'secondary' : 'outline'}
               size="sm"
-              className="shadow-lg"
+              {...buttonStyling}
             >
               <Link href="https://github.com/compusophy/self.tools" target="_blank" rel="noopener noreferrer">
                 <GitHub />
@@ -89,9 +108,8 @@ export function LayoutHeader({
           {showAdminButton && (
             <Button
               asChild
-              variant={variant === 'themed' ? 'secondary' : 'outline'}
               size="sm"
-              className="shadow-lg"
+              {...buttonStyling}
             >
               <Link href="/admin">
                 <Settings className="w-4 h-4 mr-2" />

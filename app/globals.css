@@ -130,3 +130,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom button class for light theme to fix hover text color */
+.light-theme-button {
+  @apply hover:text-black hover:bg-gray-50;
+}

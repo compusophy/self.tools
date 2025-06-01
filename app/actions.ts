@@ -18,12 +18,21 @@ export async function createSubdomainAction(
 
   const sanitizedSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
 
-  if (sanitizedSubdomain !== subdomain) {
+  // Check if subdomain is empty after sanitization
+  if (!sanitizedSubdomain) {
     return {
       subdomain,
       success: false,
-      error:
-        'Subdomain can only have lowercase letters, numbers, and hyphens. Please try again.'
+      error: 'Please enter a valid subdomain with letters, numbers, or hyphens'
+    };
+  }
+
+  // Check for minimum length
+  if (sanitizedSubdomain.length < 1) {
+    return {
+      subdomain,
+      success: false,
+      error: 'Subdomain must be at least 1 character long'
     };
   }
 
@@ -31,7 +40,7 @@ export async function createSubdomainAction(
   
   if (!success) {
     return {
-      subdomain,
+      subdomain: sanitizedSubdomain,
       success: false,
       error: 'This subdomain is already taken'
     };
