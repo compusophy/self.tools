@@ -19,21 +19,15 @@ export async function GET() {
         <div
           style={{
             display: 'flex',
-            flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
             fontWeight: 'bold',
             fontFamily: 'system-ui, sans-serif',
-            textAlign: 'center',
+            fontSize: '79px',
           }}
         >
-          <div style={{ fontSize: '24px', marginBottom: '4px' }}>
-            self
-          </div>
-          <div style={{ fontSize: '20px', color: '#888' }}>
-            .tools
-          </div>
+          S
         </div>
       </div>
     ),

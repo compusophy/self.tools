@@ -5,11 +5,6 @@ export const runtime = 'edge';
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const subdomain = searchParams.get('subdomain') || '';
-  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'localhost:3000';
-
-  // Create the display text
-  const displayText = subdomain ? `${subdomain}.${rootDomain}` : rootDomain;
-  const topLeftText = subdomain ? `[*.${rootDomain}]` : '';
 
   return new ImageResponse(
     (
@@ -27,7 +22,7 @@ export async function GET(request: Request) {
         }}
       >
         {/* Top left domain indicator - only show when subdomain is not empty */}
-        {subdomain && (
+        {subdomain !== '' && (
           <div
             style={{
               position: 'absolute',
@@ -37,7 +32,7 @@ export async function GET(request: Request) {
               fontSize: '16px',
             }}
           >
-            {topLeftText}
+            [*.self.tools]
           </div>
         )}
 
@@ -57,7 +52,7 @@ export async function GET(request: Request) {
               lineHeight: '1',
             }}
           >
-            {displayText}
+            {subdomain || 'self.tools'}
           </h1>
         </div>
       </div>

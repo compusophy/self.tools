@@ -24,34 +24,28 @@ function getBaseSignatureKey(): string {
 
 export async function GET(request: Request) {
   const host = request.headers.get('host') || ROOT_DOMAIN;
-  const protocol = host.includes('localhost') ? 'http' : 'https';
+  const protocol = 'https';
   
-  // Parse subdomain and base domain correctly
+  // Parse subdomain from request host
   let subdomain = '';
-  let baseDomain = ROOT_DOMAIN;
   
   if (host.includes('localhost')) {
     // For localhost: subdomain.localhost:3000
     const parts = host.split('.');
     if (parts.length > 1) {
       subdomain = parts[0];
-      baseDomain = parts.slice(1).join('.');
-    } else {
-      baseDomain = host;
     }
   } else {
     // For production: subdomain.yourdomain.com
     const parts = host.split('.');
     if (parts.length > 2) {
       subdomain = parts[0];
-      baseDomain = parts.slice(1).join('.');
-    } else {
-      baseDomain = host;
     }
   }
 
-  const baseUrl = `${protocol}://${baseDomain}`;
-  const subdomainUrl = subdomain ? `${protocol}://${subdomain}.${baseDomain}` : baseUrl;
+  // Always use MANIFEST_DOMAIN for consistency with JFS signatures
+  const baseUrl = `${protocol}://${MANIFEST_DOMAIN}`;
+  const subdomainUrl = subdomain ? `${protocol}://${subdomain}.${MANIFEST_DOMAIN}` : baseUrl;
 
   let accountAssociation: AccountAssociation | null = null;
 
@@ -64,7 +58,6 @@ export async function GET(request: Request) {
         accountAssociation = existingSignature;
       } else {
         // Generate and store new signature
-        // For JFS, use hardcoded domain without protocol
         const signer = new ethers.Wallet(CUSTODY_PRIVATE_KEY);
         const custodyAddress = await signer.getAddress();
         const jfsDomain = `${subdomain}.${MANIFEST_DOMAIN}`;
@@ -88,7 +81,7 @@ export async function GET(request: Request) {
         // Generate and store new signature for base domain
         const signer = new ethers.Wallet(CUSTODY_PRIVATE_KEY);
         const custodyAddress = await signer.getAddress();
-        const jfsDomain = MANIFEST_DOMAIN; // Just use the base domain
+        const jfsDomain = MANIFEST_DOMAIN;
         const newBaseSignature = await FarcasterJFS.sign(
           FID,
           custodyAddress,
@@ -124,7 +117,7 @@ export async function GET(request: Request) {
 
     frame: {
       version: "1",
-      name: subdomain ? `${subdomain}.${baseDomain}` : baseDomain,
+      name: subdomain ? `${subdomain}.${MANIFEST_DOMAIN}` : MANIFEST_DOMAIN,
       iconUrl: subdomain 
         ? `${subdomainUrl}/icon.png`
         : `${baseUrl}/icon.png`,
@@ -151,7 +144,7 @@ export async function GET(request: Request) {
   console.log('Serving frame config:', {
     host,
     subdomain,
-    baseDomain,
+    manifestDomain: MANIFEST_DOMAIN,
     baseUrl,
     subdomainUrl,
     jfsDomain: subdomain ? `${subdomain}.${MANIFEST_DOMAIN}` : MANIFEST_DOMAIN,
