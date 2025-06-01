@@ -1,13 +1,14 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = 'edge';
+export const revalidate = 300; // Revalidate every 5 minutes
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ subdomain: string }> }
 ) {
   const { subdomain } = await params;
-
+  
   return new ImageResponse(
     (
       <div
@@ -18,7 +19,7 @@ export async function GET(
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: '#000000',
-          borderRadius: '8px',
+          borderRadius: '12px',
         }}
       >
         <div
@@ -27,18 +28,21 @@ export async function GET(
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white',
-            fontSize: subdomain.length > 8 ? '10px' : '12px',
             fontWeight: 'bold',
-            fontFamily: 'monospace',
+            fontFamily: 'system-ui, sans-serif',
+            fontSize: '79px',
           }}
         >
-          {subdomain}
+          {subdomain.charAt(0).toUpperCase()}
         </div>
       </div>
     ),
     {
-      width: 64,
-      height: 64,
+      width: 128,
+      height: 128,
+      headers: {
+        'Cache-Control': 'public, max-age=300, s-maxage=300', // 5 minute cache
+      },
     }
   );
 } 

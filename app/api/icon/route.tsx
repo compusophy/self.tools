@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = 'edge';
+export const revalidate = 300; // Revalidate every 5 minutes
 
 export async function GET() {
   return new ImageResponse(
@@ -34,6 +35,9 @@ export async function GET() {
     {
       width: 128,
       height: 128,
+      headers: {
+        'Cache-Control': 'public, max-age=300, s-maxage=300', // 5 minute cache
+      },
     }
   );
 } 

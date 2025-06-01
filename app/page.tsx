@@ -19,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
         type: "launch_frame",
         name: rootDomain,
         url: `${protocol}://${rootDomain}/`,
-        splashImageUrl: `${protocol}://${rootDomain}/splash.png`,
+        splashImageUrl: `${protocol}://${rootDomain}/api/icon`,
         splashBackgroundColor: "#000000",
       },
     },

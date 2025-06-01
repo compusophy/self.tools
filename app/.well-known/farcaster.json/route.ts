@@ -118,9 +118,9 @@ export async function GET(request: Request) {
     frame: {
       version: "1",
       name: subdomain ? `${subdomain}.${MANIFEST_DOMAIN}` : MANIFEST_DOMAIN,
-      iconUrl: subdomain 
-        ? `${subdomainUrl}/icon.png`
-        : `${baseUrl}/icon.png`,
+      iconUrl: subdomain
+        ? `${subdomainUrl}/api/icon`
+        : `${baseUrl}/api/icon`,
       homeUrl: subdomain
         ? subdomainUrl
         : baseUrl,
@@ -129,8 +129,8 @@ export async function GET(request: Request) {
         : `${baseUrl}/opengraph-image.png`,
       buttonTitle: "launch",
       splashImageUrl: subdomain
-        ? `${subdomainUrl}/icon.png`
-        : `${baseUrl}/icon.png`,
+        ? `${subdomainUrl}/api/icon`
+        : `${baseUrl}/api/icon`,
       splashBackgroundColor: "#000000",
       webhookUrl: subdomain 
         ? `${subdomainUrl}/api/webhook`
