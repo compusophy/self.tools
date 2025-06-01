@@ -35,11 +35,11 @@ function SubdomainInput({ defaultValue }: { defaultValue?: string }) {
             placeholder="your-subdomain"
             value={value}
             onChange={handleInputChange}
-            className="w-full rounded-none focus:z-10"
+            className="w-full rounded-none focus:z-10 bg-white/20 border-white/30 text-white placeholder:text-gray-300 focus:border-white/50"
             required
           />
         </div>
-        <span className="bg-gray-100 px-3 border border-l-0 border-input rounded-none text-gray-500 min-h-[36px] flex items-center">
+        <span className="bg-white/20 px-3 border border-l-0 border-white/30 rounded-none text-gray-300 min-h-[36px] flex items-center">
           .{rootDomain}
         </span>
       </div>
@@ -58,10 +58,10 @@ export function SubdomainForm() {
       <SubdomainInput defaultValue={state?.subdomain} />
 
       {state?.error && (
-        <div className="text-sm text-red-500">{state.error}</div>
+        <div className="text-sm text-red-400">{state.error}</div>
       )}
 
-      <Button type="submit" className="w-full cursor-pointer" disabled={isPending}>
+      <Button type="submit" className="w-full cursor-pointer bg-white text-black hover:bg-gray-200" disabled={isPending}>
         {isPending ? 'Creating...' : 'Create'}
       </Button>
     </form>

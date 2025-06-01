@@ -28,9 +28,8 @@ export function HomeShareButton() {
   return (
     <Button
       onClick={handleShare}
-      variant="outline"
       size="sm"
-      className="shadow-lg cursor-pointer"
+      className="shadow-lg cursor-pointer bg-white text-black hover:bg-gray-200"
     >
       <Share2 className="w-4 h-4 mr-2" />
       Share

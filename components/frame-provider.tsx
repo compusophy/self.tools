@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, createContext, useContext, ReactNode } from 'react';
-import sdk from '@farcaster/frame-sdk';
+import { sdk } from '@farcaster/frame-sdk';
 
 interface FrameContextType {
   frameContext: any;
@@ -54,7 +54,7 @@ export function FrameProvider({ children, subdomain }: FrameProviderProps) {
         console.log('Fallback URL:', event.data.fallbackUrl);
         
         if (frameContext) {
-          // In Frame context, use SDK
+          // In Frame context, use SDK openUrl action
           const shareText = encodeURIComponent(`check out this frame ${event.data.page}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'self.tools'}`);
           const shareUrl = encodeURIComponent(`https://${event.data.page}.${process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'self.tools'}`);
           const warpcastUrl = `https://warpcast.com/~/compose?text=${shareText}&embeds[]=${shareUrl}`;
@@ -79,11 +79,19 @@ export function FrameProvider({ children, subdomain }: FrameProviderProps) {
     const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || 'self.tools';
     
     if (frameContext) {
-      // In Frame context, use SDK
+      // In Frame context, use SDK openUrl action
       const shareText = encodeURIComponent(`check out this frame ${subdomainToShare}.${rootDomain}`);
       const shareUrl = encodeURIComponent(`https://${subdomainToShare}.${rootDomain}`);
       const warpcastUrl = `https://warpcast.com/~/compose?text=${shareText}&embeds[]=${shareUrl}`;
-      await sdk.actions.openUrl(warpcastUrl);
+      
+      try {
+        await sdk.actions.openUrl(warpcastUrl);
+        console.log('Share URL opened:', warpcastUrl);
+      } catch (error) {
+        console.error('Error opening URL with SDK:', error);
+        // Fallback to window.open if SDK fails
+        window.open(warpcastUrl, '_blank', 'noopener,noreferrer');
+      }
     } else {
       // Not in Frame context, open in new window
       const shareText = encodeURIComponent(`check out this frame ${subdomainToShare}.${rootDomain}`);
