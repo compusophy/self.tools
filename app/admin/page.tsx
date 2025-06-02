@@ -17,8 +17,7 @@ export default async function AdminPage() {
       <main className="flex-1 py-16">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-foreground">Subdomain Platform Admin</h1>
-            <p className="text-muted-foreground mt-2">Manage all your subdomains and content</p>
+            <h1 className="text-3xl font-bold text-foreground">Settings</h1>
           </div>
           
           <Dashboard subdomains={subdomains} />
