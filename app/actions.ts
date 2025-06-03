@@ -4,7 +4,7 @@ import { redis } from '@/lib/redis';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { rootDomain, protocol } from '@/lib/utils';
-import { createSubdomain, updateSubdomainContent, deleteSubdomain, claimSubdomainOwnership, type SubdomainContent } from '@/lib/subdomains';
+import { createSubdomain, updateSubdomainContent, deleteSubdomain, claimSubdomainOwnership, getSubdomainData, type SubdomainContent } from '@/lib/subdomains';
 
 export async function createSubdomainAction(
   prevState: any,
@@ -42,13 +42,20 @@ export async function createSubdomainAction(
     };
   }
 
+  // Check if subdomain already exists
+  const existingSubdomain = await getSubdomainData(sanitizedSubdomain);
+  if (existingSubdomain) {
+    // Redirect to the existing subdomain page
+    redirect(`/s/${sanitizedSubdomain}`);
+  }
+
   const success = await createSubdomain(sanitizedSubdomain, deviceId, homeTheme);
   
   if (!success) {
     return {
       subdomain: sanitizedSubdomain,
       success: false,
-      error: 'This subdomain is already taken'
+      error: 'Failed to create subdomain'
     };
   }
 

@@ -9,8 +9,8 @@ import { type getAllSubdomains } from '@/lib/subdomains';
 import { rootDomain, protocol } from '@/lib/utils';
 import { Trash2, Palette, Rocket, Crown } from 'lucide-react';
 import { useActionState, useState, useEffect } from 'react';
-import { sdk } from '@farcaster/frame-sdk';
 import { getOrCreateDeviceId } from '@/lib/user';
+import Link from 'next/link';
 
 type SubdomainInfo = Awaited<ReturnType<typeof getAllSubdomains>>[0];
 
@@ -27,21 +27,6 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
     const id = getOrCreateDeviceId();
     setDeviceId(id);
   }, []);
-
-  const handleLaunchFrame = async () => {
-    try {
-      const subdomainUrl = `${protocol}://${subdomain.subdomain}.${rootDomain}/`;
-      const encodedUrl = encodeURIComponent(subdomainUrl);
-      const farcasterLaunchUrl = `https://farcaster.xyz/?launchFrameUrl=${encodedUrl}`;
-      
-      await sdk.actions.openUrl(farcasterLaunchUrl);
-    } catch (error) {
-      console.error('Error launching frame:', error);
-      // Fallback to direct navigation
-      const subdomainUrl = `${protocol}://${subdomain.subdomain}.${rootDomain}/`;
-      window.open(subdomainUrl, '_blank', 'noopener,noreferrer');
-    }
-  };
 
   // Check if current user is the creator
   const isOwner = deviceId && subdomain.createdBy === deviceId;
@@ -68,13 +53,15 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
         {/* Actions */}
         <div className="flex gap-2">
           <Button
-            onClick={handleLaunchFrame}
+            asChild
             variant="outline"
             size="sm"
             className="flex-1"
           >
-            <Rocket className="w-4 h-4 mr-2" />
-            Launch
+            <Link href={`/s/${subdomain.subdomain}`}>
+              <Rocket className="w-4 h-4 mr-2" />
+              Launch
+            </Link>
           </Button>
           
           {canDelete && (

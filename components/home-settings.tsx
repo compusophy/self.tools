@@ -44,29 +44,24 @@ export function HomeSettings({ currentTheme = 'dark', lightThemeButtonClass = ''
     setSelectedTheme(currentTheme);
   }, [currentTheme]);
 
-  const borderColor = 'border-white/20';
-  
-  // Get modal background and text colors based on theme (matching SubdomainEditor)
+  // Get theme-specific modal styling
   const getModalStyling = () => {
     switch (currentTheme) {
       case 'light':
         return {
-          background: 'bg-white text-black',
-          labelColor: 'text-black',
-          inputColor: 'text-black bg-white border-gray-300'
+          background: 'bg-white',
+          labelColor: 'text-black'
         };
       case 'color':
         return {
-          background: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 text-white',
-          labelColor: 'text-white',
-          inputColor: 'text-white bg-white/10 border-white/30 placeholder-white/60'
+          background: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500',
+          labelColor: 'text-white'
         };
       case 'dark':
       default:
         return {
-          background: 'bg-black text-white',
-          labelColor: 'text-white',
-          inputColor: 'text-white bg-gray-800 border-gray-600 placeholder-gray-400'
+          background: 'bg-black',
+          labelColor: 'text-white'
         };
     }
   };
@@ -97,22 +92,22 @@ export function HomeSettings({ currentTheme = 'dark', lightThemeButtonClass = ''
       </DialogTrigger>
       <DialogContent className={`modal-mobile-container ${modalStyling.background}`}>
         {/* Header */}
-        <div className={`modal-mobile-header ${borderColor}`}>
+        <div className="modal-mobile-header">
           <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor}`}>Settings</DialogTitle>
           <DialogClose asChild>
             <Button
               variant="outline"
               size="sm"
-              className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}
+              className={secondaryButtonClass || 'shadow-lg cursor-pointer'}
             >
               <X className="w-4 h-4 mr-2" />
-              Cancel
+              Close
             </Button>
           </DialogClose>
         </div>
 
         {/* Scrollable Content Area */}
-        <div className={`modal-mobile-main ${borderColor}`}>
+        <div className="modal-mobile-main">
           <div className="container mx-auto px-4 py-8 max-w-4xl">
             <div className="space-y-8">
               {/* Theme Selector */}
@@ -147,10 +142,10 @@ export function HomeSettings({ currentTheme = 'dark', lightThemeButtonClass = ''
         </div>
 
         {/* Footer */}
-        <div className={`modal-mobile-footer ${borderColor}`}>
-          <Button onClick={handleSave} disabled={isPending} size="sm" variant="outline" className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
+        <div className="modal-mobile-footer">
+          <Button onClick={handleSave} size="sm" variant="outline" className={secondaryButtonClass || 'shadow-lg cursor-pointer'}>
             <Save className="w-4 h-4 mr-2" />
-            {isPending ? 'Saving...' : 'Save'}
+            Save
           </Button>
         </div>
       </DialogContent>

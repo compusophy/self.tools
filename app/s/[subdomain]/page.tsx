@@ -110,23 +110,20 @@ export default async function SubdomainPage({
         return {
           container: 'bg-white text-black min-h-screen',
           header: { textPrimary: 'text-black', textSecondary: 'text-gray-600', background: 'bg-white' },
-          footer: { background: 'bg-white' },
-          borderColor: 'border-gray-300'
+          footer: { background: 'bg-white' }
         };
       case 'color':
         return {
           container: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 text-white min-h-screen',
           header: { textPrimary: 'text-white', textSecondary: 'text-white/70', background: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500' },
-          footer: { background: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500' },
-          borderColor: 'border-white/30'
+          footer: { background: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500' }
         };
       case 'dark':
       default:
         return {
           container: 'bg-black text-white min-h-screen',
           header: { textPrimary: 'text-white', textSecondary: 'text-gray-400', background: 'bg-black' },
-          footer: { background: 'bg-black' },
-          borderColor: 'border-white/20'
+          footer: { background: 'bg-black' }
         };
     }
   };
@@ -163,7 +160,6 @@ export default async function SubdomainPage({
             editButton={<SubdomainEditor subdomain={subdomain} data={subdomainData} theme={subdomainData.content.theme} themeStyles={themeStyles} lightThemeButtonClass={lightThemeButtonClass} secondaryButtonClass={secondaryButtonClass} />}
             theme={themeStyles.header}
             variant="themed"
-            borderColor={themeStyles.borderColor}
             secondaryButtonClass={secondaryButtonClass}
           />
         </div>
@@ -197,7 +193,7 @@ export default async function SubdomainPage({
 
         {/* Footer */}
         <div className="mobile-layout-footer">
-          <LayoutFooter variant="themed" theme={themeStyles.footer} borderColor={themeStyles.borderColor}>
+          <LayoutFooter variant="themed" theme={themeStyles.footer}>
             <ShareButton subdomain={subdomain} lightThemeButtonClass={lightThemeButtonClass} secondaryButtonClass={secondaryButtonClass} />
           </LayoutFooter>
         </div>

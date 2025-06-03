@@ -303,12 +303,12 @@
 
 /* Modal header - flex-shrink-0 to stay at top */
 .modal-mobile-header {
-  @apply flex-shrink-0 py-4 px-4 border-l border-r border-b flex items-center justify-between;
+  @apply flex-shrink-0 py-4 px-4 flex items-center justify-between;
 }
 
 /* Modal main content - flex-1 to fill remaining space with scroll */
 .modal-mobile-main {
-  @apply flex-1 overflow-y-auto border-l border-r;
+  @apply flex-1 overflow-y-auto;
   min-height: 0; /* Important for flex child with overflow */
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   /* Hide scrollbars */
@@ -322,5 +322,5 @@
 
 /* Modal footer - flex-shrink-0 to stay at bottom */
 .modal-mobile-footer {
-  @apply flex-shrink-0 py-4 border-l border-r border-t flex items-center justify-center;
+  @apply flex-shrink-0 py-4 flex items-center justify-center;
 }

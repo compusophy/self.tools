@@ -18,7 +18,6 @@ interface LayoutHeaderProps {
   variant?: 'default' | 'themed';
   size?: 'default' | 'large';
   homeButtonStyle?: 'link' | 'button';
-  borderColor?: string;
   buttonClass?: string;
   lightThemeButtonClass?: string;
   secondaryButtonClass?: string;
@@ -34,21 +33,15 @@ export function LayoutHeader({
   variant = 'default',
   size = 'default',
   homeButtonStyle = 'link',
-  borderColor,
   buttonClass,
   lightThemeButtonClass = '',
   secondaryButtonClass = ''
 }: LayoutHeaderProps) {
   const paddingClass = size === 'large' ? 'py-6' : 'py-4';
   
-  const getBorderClass = () => {
-    if (borderColor) return borderColor;
-    return variant === 'themed' ? 'border-white/20' : 'border-border';
-  };
-  
   const headerClasses = variant === 'themed' && theme?.background
-    ? `flex-shrink-0 ${paddingClass} px-4 border-b ${getBorderClass()}`
-    : `flex-shrink-0 ${paddingClass} px-4 border-b ${getBorderClass()}`;
+    ? `flex-shrink-0 ${paddingClass} px-4`
+    : `flex-shrink-0 ${paddingClass} px-4`;
 
   const linkClasses = variant === 'themed' 
     ? `text-sm ${theme?.textSecondary || 'text-white/70'} hover:${theme?.textPrimary || 'text-white'} transition-colors`
