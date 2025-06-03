@@ -8,9 +8,10 @@ interface ShareButtonProps {
   subdomain: string;
   className?: string;
   lightThemeButtonClass?: string;
+  secondaryButtonClass?: string;
 }
 
-export function ShareButton({ subdomain, className, lightThemeButtonClass = '' }: ShareButtonProps) {
+export function ShareButton({ subdomain, className, lightThemeButtonClass = '', secondaryButtonClass = '' }: ShareButtonProps) {
   const { shareToWarpcast, isInFrame } = useFrameContext();
 
   const handleShare = async () => {
@@ -26,7 +27,7 @@ export function ShareButton({ subdomain, className, lightThemeButtonClass = '' }
       onClick={handleShare}
       variant="outline"
       size="sm"
-      className={`shadow-lg cursor-pointer ${lightThemeButtonClass} ${className || ''}`}
+      className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass} ${className || ''}`}
     >
       <Share2 className="w-4 h-4 mr-2" />
       Share

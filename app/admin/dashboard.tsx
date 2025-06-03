@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { deleteSubdomainAction } from '@/app/actions';
 import { type getAllSubdomains } from '@/lib/subdomains';
 import { rootDomain, protocol } from '@/lib/utils';
-import { Trash2, Palette, Rocket } from 'lucide-react';
+import { Trash2, Palette, Rocket, Crown } from 'lucide-react';
 import { useActionState, useState, useEffect } from 'react';
 import { sdk } from '@farcaster/frame-sdk';
 import { getOrCreateDeviceId } from '@/lib/user';
@@ -43,34 +43,28 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
     }
   };
 
-  // Only show title if it's different from subdomain name
-  const showTitle = subdomain.title && subdomain.title !== subdomain.subdomain && subdomain.title !== 'Untitled Page';
-  
   // Check if current user is the creator
   const isOwner = deviceId && subdomain.createdBy === deviceId;
+  
+  // Only owner can delete their own subdomain
+  const canDelete = isOwner;
 
   return (
     <Card className="w-full !gap-0 !py-0">
-      <CardHeader className="p-4 pb-1">
-        <div className="space-y-0.5">
+      <CardHeader className="p-4 pb-2">
+        <div className="flex items-center justify-between">
           <CardTitle className="text-lg">
             {subdomain.subdomain}
           </CardTitle>
-          {showTitle && (
-            <CardDescription className="text-sm font-medium">
-              {subdomain.title}
-            </CardDescription>
+          {isOwner && (
+            <div title="Owner">
+              <Crown className="w-4 h-4 text-yellow-500" />
+            </div>
           )}
         </div>
       </CardHeader>
       
-      <CardContent className="p-4 pt-1 space-y-2">
-        {/* Theme Info */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Palette className="w-4 h-4" />
-          <span>Theme: {subdomain.theme || 'default'}</span>
-        </div>
-
+      <CardContent className="p-4 pt-0 space-y-2">
         {/* Actions */}
         <div className="flex gap-2">
           <Button
@@ -83,7 +77,7 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
             Launch
           </Button>
           
-          {isOwner && (
+          {canDelete && (
             <form action={deleteAction}>
               <Input
                 type="hidden"
@@ -125,6 +119,12 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
 
 export function Dashboard({ subdomains }: DashboardProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [deviceId, setDeviceId] = useState('');
+
+  useEffect(() => {
+    const id = getOrCreateDeviceId();
+    setDeviceId(id);
+  }, []);
 
   const filteredSubdomains = subdomains.filter(subdomain =>
     subdomain.subdomain.toLowerCase().includes(searchTerm.toLowerCase()) ||

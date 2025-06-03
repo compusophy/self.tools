@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Test - Theme Changing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .iframe-container {
+            background: white;
+            border: 2px solid #333;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        .instructions {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .success {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Iframe Theme Changing Test</h1>
+        
+        <div class="success">
+            <h3>✅ What's Fixed:</h3>
+            <ul>
+                <li><strong>Cross-origin cookies:</strong> Added SameSite=None and Secure for iframe contexts</li>
+                <li><strong>Storage fallbacks:</strong> Using sessionStorage as backup when cookies fail</li>
+                <li><strong>Relaxed authorization:</strong> Auto-claiming ownership for recent subdomains in dev</li>
+                <li><strong>Iframe detection:</strong> Different handling for iframe vs direct access</li>
+                <li><strong>Security headers:</strong> Removed iframe blocking, added CSP frame-ancestors</li>
+            </ul>
+        </div>
+
+        <div class="instructions">
+            <h3>🧪 How to Test:</h3>
+            <ol>
+                <li><strong>Create a subdomain</strong> in the iframe below</li>
+                <li><strong>Go to the subdomain page</strong> (click the subdomain link)</li>
+                <li><strong>Click "Edit"</strong> button on the subdomain page</li>
+                <li><strong>Change the theme</strong> (Dark/Light/Color)</li>
+                <li><strong>Click "Save"</strong> - the theme should apply immediately!</li>
+            </ol>
+            <p><strong>Expected Result:</strong> Theme changes should work seamlessly in the iframe, just like in a regular browser window.</p>
+        </div>
+
+        <h2>📱 Embedded Platform (Iframe)</h2>
+        <div class="iframe-container">
+            <iframe 
+                src="http://localhost:3000"
+                title="Platform Iframe Test"
+                allowfullscreen
+                allow="clipboard-write; clipboard-read">
+            </iframe>
+        </div>
+
+        <h2>🔧 Browser Console Logs</h2>
+        <p>Open your browser's developer console to see iframe-specific logging:</p>
+        <ul>
+            <li><code>getOrCreateDeviceId - Environment: localhost (iframe)</code></li>
+            <li><code>Setting iframe-friendly cookie: deviceId</code></li>
+            <li><code>getOrCreateDeviceId - Retrieved device ID in iframe context</code></li>
+            <li><code>Auto-claiming ownership for development environment: [subdomain]</code></li>
+            <li><code>Allowing iframe edit for very recent subdomain: [subdomain]</code></li>
+        </ul>
+
+        <div class="instructions">
+            <h3>🚀 Production Notes:</h3>
+            <p>In production (HTTPS), the iframe will work even better because:</p>
+            <ul>
+                <li>Secure cookies will be properly set with SameSite=None</li>
+                <li>Cross-origin storage restrictions are handled gracefully</li>
+                <li>Domain cookies work across all subdomains</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html> 

@@ -135,6 +135,21 @@ export default async function SubdomainPage({
   
   // Custom class for light theme to fix button hover text
   const lightThemeButtonClass = subdomainData.content.theme === 'light' ? 'light-theme-button' : '';
+  
+  // Get unified secondary button class
+  const getSecondaryButtonClass = (theme: string) => {
+    switch (theme) {
+      case 'light':
+        return 'btn-secondary-light';
+      case 'color':
+        return 'btn-secondary-color';
+      case 'dark':
+      default:
+        return 'btn-secondary-dark';
+    }
+  };
+  
+  const secondaryButtonClass = getSecondaryButtonClass(subdomainData.content.theme);
 
   return (
     <FrameProvider subdomain={subdomain}>
@@ -145,11 +160,11 @@ export default async function SubdomainPage({
             showHomeLink={true}
             homeButtonStyle="button"
             showEditButton={subdomainData.settings.allowEditing}
-            editButton={<SubdomainEditor subdomain={subdomain} data={subdomainData} theme={subdomainData.content.theme} themeStyles={themeStyles} lightThemeButtonClass={lightThemeButtonClass} />}
+            editButton={<SubdomainEditor subdomain={subdomain} data={subdomainData} theme={subdomainData.content.theme} themeStyles={themeStyles} lightThemeButtonClass={lightThemeButtonClass} secondaryButtonClass={secondaryButtonClass} />}
             theme={themeStyles.header}
             variant="themed"
             borderColor={themeStyles.borderColor}
-            lightThemeButtonClass={lightThemeButtonClass}
+            secondaryButtonClass={secondaryButtonClass}
           />
         </div>
 
@@ -183,7 +198,7 @@ export default async function SubdomainPage({
         {/* Footer */}
         <div className="mobile-layout-footer">
           <LayoutFooter variant="themed" theme={themeStyles.footer} borderColor={themeStyles.borderColor}>
-            <ShareButton subdomain={subdomain} lightThemeButtonClass={lightThemeButtonClass} />
+            <ShareButton subdomain={subdomain} lightThemeButtonClass={lightThemeButtonClass} secondaryButtonClass={secondaryButtonClass} />
           </LayoutFooter>
         </div>
       </div>

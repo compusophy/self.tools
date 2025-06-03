@@ -95,9 +95,9 @@ export function HomeSettings({ currentTheme = 'dark', lightThemeButtonClass = ''
           Settings
         </Button>
       </DialogTrigger>
-      <DialogContent className={`max-w-4xl h-screen flex flex-col p-0 gap-0 !border-0 [&>button]:hidden ${modalStyling.background}`}>
-        {/* Header - with left/right/bottom borders */}
-        <div className={`flex-shrink-0 py-4 px-4 border-l border-r border-b ${borderColor} flex items-center justify-between`}>
+      <DialogContent className={`modal-mobile-container ${modalStyling.background}`}>
+        {/* Header */}
+        <div className={`modal-mobile-header ${borderColor}`}>
           <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor}`}>Settings</DialogTitle>
           <DialogClose asChild>
             <Button
@@ -111,8 +111,8 @@ export function HomeSettings({ currentTheme = 'dark', lightThemeButtonClass = ''
           </DialogClose>
         </div>
 
-        {/* Scrollable Content Area with left/right borders only */}
-        <div className={`flex-1 overflow-y-auto scrollbar-hide border-l border-r ${borderColor}`}>
+        {/* Scrollable Content Area */}
+        <div className={`modal-mobile-main ${borderColor}`}>
           <div className="container mx-auto px-4 py-8 max-w-4xl">
             <div className="space-y-8">
               {/* Theme Selector */}
@@ -146,14 +146,12 @@ export function HomeSettings({ currentTheme = 'dark', lightThemeButtonClass = ''
           </div>
         </div>
 
-        {/* Footer - with left/right/top borders */}
-        <div className={`flex-shrink-0 py-4 border-l border-r border-t ${borderColor}`}>
-          <div className="flex items-center justify-center">
-            <Button onClick={handleSave} disabled={isPending} size="sm" variant="outline" className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
-              <Save className="w-4 h-4 mr-2" />
-              {isPending ? 'Saving...' : 'Save'}
-            </Button>
-          </div>
+        {/* Footer */}
+        <div className={`modal-mobile-footer ${borderColor}`}>
+          <Button onClick={handleSave} disabled={isPending} size="sm" variant="outline" className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
+            <Save className="w-4 h-4 mr-2" />
+            {isPending ? 'Saving...' : 'Save'}
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

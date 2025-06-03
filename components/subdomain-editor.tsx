@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -16,6 +16,7 @@ import {
 import { Edit3, Save, X } from 'lucide-react';
 import { updateSubdomainContentAction } from '@/app/actions';
 import { type SubdomainData } from '@/lib/subdomains';
+import { getOrCreateDeviceId } from '@/lib/user';
 
 interface SubdomainEditorProps {
   subdomain: string;
@@ -26,6 +27,7 @@ interface SubdomainEditorProps {
     borderColor: string;
   };
   lightThemeButtonClass?: string;
+  secondaryButtonClass?: string;
 }
 
 const themes = [
@@ -34,16 +36,22 @@ const themes = [
   { id: 'color', name: 'COLOR', colors: 'bg-gradient-to-br from-purple-600 to-pink-600 text-white' },
 ] as const;
 
-export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, lightThemeButtonClass = '' }: SubdomainEditorProps) {
+export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, lightThemeButtonClass = '', secondaryButtonClass = '' }: SubdomainEditorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [deviceId, setDeviceId] = useState('');
   
   const [formData, setFormData] = useState({
     title: data.content.title,
     description: data.content.description,
-    body: data.content.body,
     theme: data.content.theme,
   });
+
+  useEffect(() => {
+    // Get device ID for authentication
+    const id = getOrCreateDeviceId();
+    setDeviceId(id);
+  }, []);
 
   const borderColor = themeStyles?.borderColor || 'border-border';
   
@@ -79,14 +87,9 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
     form.append('subdomain', subdomain);
     form.append('title', formData.title);
     form.append('description', formData.description);
-    form.append('body', formData.body);
+    form.append('body', data.content.body);
     form.append('theme', formData.theme);
-    
-    // Add device ID for authentication
-    if (typeof window !== 'undefined') {
-      const deviceId = localStorage.getItem('deviceId') || '';
-      form.append('deviceId', deviceId);
-    }
+    form.append('deviceId', deviceId);
 
     startTransition(async () => {
       await updateSubdomainContentAction({}, form);
@@ -101,7 +104,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
         <Button
           variant="outline"
           size="sm"
-          className={`shadow-lg cursor-pointer ${lightThemeButtonClass}`}
+          className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}
         >
           <Edit3 className="w-4 h-4 mr-2" />
           Edit
@@ -115,7 +118,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
             <Button
               variant="outline"
               size="sm"
-              className={`shadow-lg cursor-pointer ${lightThemeButtonClass}`}
+              className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}
             >
               <X className="w-4 h-4 mr-2" />
               Cancel
@@ -124,7 +127,13 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
         </div>
 
         {/* Scrollable Content Area with left/right borders only */}
-        <div className={`flex-1 overflow-y-auto scrollbar-hide border-l border-r ${borderColor}`}>
+        <div 
+          className={`flex-1 overflow-y-auto border-l border-r ${borderColor}`} 
+          style={{
+            msOverflowStyle: 'none', 
+            scrollbarWidth: 'none'
+          }}
+        >
           <div className="container mx-auto px-4 py-8 max-w-4xl">
             <div className="space-y-8">
               {/* Theme Selector */}
@@ -189,7 +198,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
         {/* Footer - with left/right/top borders */}
         <div className={`flex-shrink-0 py-4 border-l border-r border-t ${borderColor}`}>
           <div className="flex items-center justify-center">
-            <Button onClick={handleSave} disabled={isPending} size="sm" variant="outline" className={`shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
+            <Button onClick={handleSave} disabled={isPending} size="sm" variant="outline" className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
               <Save className="w-4 h-4 mr-2" />
               {isPending ? 'Saving...' : 'Save'}
             </Button>

@@ -4,7 +4,7 @@ import { redis } from '@/lib/redis';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { rootDomain, protocol } from '@/lib/utils';
-import { createSubdomain, updateSubdomainContent, deleteSubdomain, type SubdomainContent } from '@/lib/subdomains';
+import { createSubdomain, updateSubdomainContent, deleteSubdomain, claimSubdomainOwnership, type SubdomainContent } from '@/lib/subdomains';
 
 export async function createSubdomainAction(
   prevState: any,
@@ -109,4 +109,29 @@ export async function updateSubdomainContentAction(
 
   revalidatePath(`/s/${subdomain}`);
   return { success: true, message: 'Content updated successfully' };
+}
+
+export async function claimSubdomainOwnershipAction(
+  prevState: any,
+  formData: FormData
+) {
+  const subdomain = formData.get('subdomain') as string;
+  const deviceId = formData.get('deviceId') as string;
+
+  if (!subdomain) {
+    return { success: false, error: 'Subdomain is required' };
+  }
+
+  if (!deviceId) {
+    return { success: false, error: 'Device ID is required' };
+  }
+
+  const success = await claimSubdomainOwnership(subdomain, deviceId);
+
+  if (!success) {
+    return { success: false, error: 'Failed to claim ownership or not allowed' };
+  }
+
+  revalidatePath(`/s/${subdomain}`);
+  return { success: true, message: 'Ownership claimed successfully' };
 }

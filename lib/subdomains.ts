@@ -67,6 +67,16 @@ export async function createSubdomain(subdomain: string, creatorDeviceId: string
   return true;
 }
 
+// Helper function to check if we're in an iframe context on the client
+function isClientInIframe(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.self !== window.top;
+  } catch (e) {
+    return true; // If we can't access window.top, we're likely in an iframe
+  }
+}
+
 export async function updateSubdomainContent(
   subdomain: string, 
   content: Partial<SubdomainContent>,
@@ -81,6 +91,52 @@ export async function updateSubdomainContent(
 
   // Check if user is the creator
   if (existing.createdBy !== userDeviceId) {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+    const isRecentlyCreated = Date.now() - existing.createdAt < 60 * 60 * 1000; // 1 hour
+    
+    // More permissive authorization for development environment
+    if (isDevelopment && isRecentlyCreated) {
+      console.log('Auto-claiming ownership for development environment:', sanitizedSubdomain);
+      // Update the creator to current device ID
+      const updatedData: SubdomainData = {
+        ...existing,
+        createdBy: userDeviceId,
+        content: {
+          ...existing.content,
+          ...content,
+          lastModified: Date.now()
+        }
+      };
+      
+      await redis.set(`subdomain:${sanitizedSubdomain}`, updatedData);
+      return true;
+    }
+    
+    // Additional relaxed authorization for iframe contexts in development
+    // This helps when device IDs are unreliable due to iframe storage restrictions
+    if (isDevelopment) {
+      // Check if this might be an iframe context by looking at recent creation
+      // and allowing editing of very recent subdomains (within 10 minutes)
+      const isVeryRecentlyCreated = Date.now() - existing.createdAt < 10 * 60 * 1000; // 10 minutes
+      
+      if (isVeryRecentlyCreated) {
+        console.log('Allowing iframe edit for very recent subdomain:', sanitizedSubdomain);
+        // Update the creator to current device ID for consistency
+        const updatedData: SubdomainData = {
+          ...existing,
+          createdBy: userDeviceId,
+          content: {
+            ...existing.content,
+            ...content,
+            lastModified: Date.now()
+          }
+        };
+        
+        await redis.set(`subdomain:${sanitizedSubdomain}`, updatedData);
+        return true;
+      }
+    }
+    
     return false; // Unauthorized
   }
 
@@ -91,6 +147,33 @@ export async function updateSubdomainContent(
       ...content,
       lastModified: Date.now()
     }
+  };
+
+  await redis.set(`subdomain:${sanitizedSubdomain}`, updatedData);
+  return true;
+}
+
+// New function to manually claim ownership of a subdomain
+export async function claimSubdomainOwnership(subdomain: string, userDeviceId: string): Promise<boolean> {
+  const sanitizedSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
+  const existing = await getSubdomainData(sanitizedSubdomain);
+  
+  if (!existing) {
+    return false;
+  }
+
+  // Only allow claiming in development environment
+  const isDevelopment = process.env.NODE_ENV === 'development';
+
+  if (!isDevelopment) {
+    return false;
+  }
+
+  console.log('Manually claiming subdomain ownership:', sanitizedSubdomain);
+
+  const updatedData: SubdomainData = {
+    ...existing,
+    createdBy: userDeviceId
   };
 
   await redis.set(`subdomain:${sanitizedSubdomain}`, updatedData);
@@ -168,5 +251,9 @@ export const SubdomainSDK = {
 
   async canModify(subdomain: string, userDeviceId: string) {
     return await canUserModifySubdomain(subdomain, userDeviceId);
+  },
+
+  async claimOwnership(subdomain: string, userDeviceId: string) {
+    return await claimSubdomainOwnership(subdomain, userDeviceId);
   }
 };

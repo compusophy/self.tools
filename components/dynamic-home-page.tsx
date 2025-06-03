@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Key } from 'lucide-react';
+import { Crown } from 'lucide-react';
 import { LayoutHeader } from '@/components/layout-header';
 import { LayoutFooter } from '@/components/layout-footer';
 import { HomeShareButton } from '@/components/home-share-button';
@@ -111,7 +111,7 @@ export function DynamicHomePage() {
         {/* Footer */}
         <div className="mobile-layout-footer">
           <LayoutFooter variant="themed" theme={themeStyles.footer} borderColor={themeStyles.borderColor}>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center justify-between w-full">
               <HomeShareButton secondaryButtonClass={secondaryButtonClass} />
               <Button
                 asChild
@@ -120,7 +120,7 @@ export function DynamicHomePage() {
                 className={secondaryButtonClass}
               >
                 <Link href="/admin">
-                  <Key className="w-4 h-4 mr-2" />
+                  <Crown className="w-4 h-4 mr-2" />
                   Admin
                 </Link>
               </Button>
@@ -174,7 +174,7 @@ export function DynamicHomePage() {
       {/* Footer */}
       <div className="mobile-layout-footer">
         <LayoutFooter variant="themed" theme={themeStyles.footer} borderColor={themeStyles.borderColor}>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between w-full">
             <HomeShareButton secondaryButtonClass={secondaryButtonClass} />
             <Button
               asChild
@@ -183,7 +183,7 @@ export function DynamicHomePage() {
               className={secondaryButtonClass}
             >
               <Link href="/admin">
-                <Key className="w-4 h-4 mr-2" />
+                <Crown className="w-4 h-4 mr-2" />
                 Admin
               </Link>
             </Button>

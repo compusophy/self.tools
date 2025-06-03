@@ -19,7 +19,7 @@ export default async function AdminPage() {
       <main className="mobile-layout-main">
         <div className="container mx-auto px-4 max-w-7xl py-8">
           <div className="mb-8 text-center">
-            <h1 className="text-3xl font-bold text-foreground">Settings</h1>
+            <h1 className="text-3xl font-bold text-foreground">Admin</h1>
           </div>
           
           <Dashboard subdomains={subdomains} />
