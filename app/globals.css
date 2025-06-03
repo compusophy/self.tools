@@ -131,88 +131,151 @@
   }
 }
 
+/* ===== UNIFIED GLOW SYSTEM ===== */
+/* All glow effects are centralized here using CSS custom properties */
+/* Based on dark theme standards (which user likes) */
+
+:root {
+  /* Primary button glow - larger, more prominent */
+  --primary-glow-inner: 0 0 20px;
+  --primary-glow-outer: 0 0 40px;
+  --primary-glow-shadow: 0 4px 8px;
+  --primary-glow-transform: translateY(-1px);
+  
+  /* Secondary button glow - smaller, more subtle */
+  --secondary-glow-inner: 0 0 15px;
+  --secondary-glow-outer: 0 0 30px;
+  --secondary-glow-shadow: 0 2px 4px;
+  --secondary-glow-transform: translateY(-1px);
+  
+  /* Universal transition for all buttons */
+  --button-transition: all 0.3s ease;
+}
+
 /* ===== UNIFIED UNIVERSAL BUTTON SYSTEM ===== */
 
 /* DARK THEME BUTTONS */
 .btn-primary-dark {
   @apply bg-white text-black shadow-lg cursor-pointer;
-  transition: all 0.3s ease;
+  transition: var(--button-transition);
 }
 
 .btn-primary-dark:hover {
   @apply bg-white text-black;
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.2), 0 4px 8px rgba(0, 0, 0, 0.3);
-  transform: translateY(-1px);
+  box-shadow: 
+    var(--primary-glow-inner) rgba(255, 255, 255, 0.4),
+    var(--primary-glow-outer) rgba(255, 255, 255, 0.2),
+    var(--primary-glow-shadow) rgba(0, 0, 0, 0.3);
+  transform: var(--primary-glow-transform);
 }
 
 .btn-secondary-dark {
   @apply border bg-background shadow-xs cursor-pointer;
-  transition: all 0.3s ease;
+  transition: var(--button-transition);
 }
 
 .btn-secondary-dark:hover {
   @apply border bg-background;
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2), 0 0 30px rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.2);
-  transform: translateY(-1px);
+  box-shadow: 
+    var(--secondary-glow-inner) rgba(255, 255, 255, 0.2),
+    var(--secondary-glow-outer) rgba(255, 255, 255, 0.1),
+    var(--secondary-glow-shadow) rgba(0, 0, 0, 0.2);
+  transform: var(--secondary-glow-transform);
 }
 
 /* LIGHT THEME BUTTONS */
 .btn-primary-light {
   @apply bg-black text-white shadow-lg cursor-pointer;
-  transition: all 0.3s ease;
+  transition: var(--button-transition);
 }
 
 .btn-primary-light:hover {
   @apply bg-black text-white;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4), 0 0 40px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.3);
-  transform: translateY(-1px);
+  box-shadow: 
+    var(--primary-glow-inner) rgba(0, 0, 0, 0.4),
+    var(--primary-glow-outer) rgba(0, 0, 0, 0.2),
+    var(--primary-glow-shadow) rgba(0, 0, 0, 0.3);
+  transform: var(--primary-glow-transform);
 }
 
 .btn-secondary-light {
   @apply border border-gray-300 bg-white text-black shadow-xs cursor-pointer;
-  transition: all 0.3s ease;
+  transition: var(--button-transition);
 }
 
 .btn-secondary-light:hover {
   @apply border-gray-300 bg-white text-black;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2), 0 0 30px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.2);
-  transform: translateY(-1px);
+  box-shadow: 
+    var(--secondary-glow-inner) rgba(0, 0, 0, 0.2),
+    var(--secondary-glow-outer) rgba(0, 0, 0, 0.1),
+    var(--secondary-glow-shadow) rgba(0, 0, 0, 0.2);
+  transform: var(--secondary-glow-transform);
 }
 
 /* COLOR THEME BUTTONS */
 .btn-primary-color {
   @apply bg-white shadow-lg cursor-pointer;
-  transition: all 0.3s ease;
+  transition: var(--button-transition);
 }
 
 .btn-primary-color:hover {
   @apply bg-white;
   box-shadow: 
-    0 0 15px rgba(255, 255, 255, 0.8),
-    0 0 25px rgba(147, 51, 234, 0.7), 
-    0 0 35px rgba(236, 72, 153, 0.6), 
-    0 0 45px rgba(249, 115, 22, 0.5), 
-    0 4px 8px rgba(0, 0, 0, 0.2);
-  transform: translateY(-1px);
+    var(--primary-glow-inner) rgba(255, 255, 255, 0.7),
+    var(--primary-glow-inner) rgba(147, 51, 234, 0.6), 
+    var(--primary-glow-outer) rgba(236, 72, 153, 0.5), 
+    var(--primary-glow-outer) rgba(249, 115, 22, 0.4), 
+    var(--primary-glow-shadow) rgba(0, 0, 0, 0.2);
+  transform: var(--primary-glow-transform);
 }
 
 .btn-secondary-color {
   @apply border border-white/30 bg-white/10 text-white shadow-xs cursor-pointer;
-  transition: all 0.3s ease;
+  transition: var(--button-transition);
 }
 
 .btn-secondary-color:hover {
   @apply border-white/30 bg-white/10 text-white;
   box-shadow: 
-    0 0 12px rgba(255, 255, 255, 0.6),
-    0 0 20px rgba(147, 51, 234, 0.5), 
-    0 0 30px rgba(236, 72, 153, 0.4), 
-    0 0 40px rgba(249, 115, 22, 0.3), 
-    0 2px 4px rgba(0, 0, 0, 0.15);
-  transform: translateY(-1px);
+    var(--secondary-glow-inner) rgba(255, 255, 255, 0.6),
+    var(--secondary-glow-inner) rgba(147, 51, 234, 0.5), 
+    var(--secondary-glow-outer) rgba(236, 72, 153, 0.4), 
+    var(--secondary-glow-outer) rgba(249, 115, 22, 0.3), 
+    var(--secondary-glow-shadow) rgba(0, 0, 0, 0.15);
+  transform: var(--secondary-glow-transform);
 }
 
 /* Legacy class for backwards compatibility */
 .light-theme-button {
   @apply hover:text-black hover:bg-gray-50;
+}
+
+/* ===== MOBILE-FRIENDLY LAYOUT SYSTEM ===== */
+
+/* Main container for mobile-friendly layout */
+.mobile-layout-container {
+  @apply relative;
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height for mobile browsers */
+  overflow: hidden;
+}
+
+/* Absolutely positioned header */
+.mobile-layout-header {
+  @apply absolute top-0 left-0 right-0 z-10;
+}
+
+/* Absolutely positioned footer */
+.mobile-layout-footer {
+  @apply absolute bottom-0 left-0 right-0 z-10;
+}
+
+/* Main content area with proper insets */
+.mobile-layout-main {
+  @apply absolute inset-0;
+  padding-top: 73px; /* Height of header + border */
+  padding-bottom: 73px; /* Height of footer + border */
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }

@@ -72,20 +72,22 @@ export function DynamicHomePage() {
     const secondaryButtonClass = getSecondaryButtonClass('dark');
     
     return (
-      <div className={`flex flex-col ${themeStyles.container}`}>
+      <div className={`mobile-layout-container ${themeStyles.container.replace('min-h-screen', '')}`}>
         {/* Header */}
-        <LayoutHeader 
-          showSourceButton={true} 
-          showEditButton={true}
-          editButton={<HomeSettings currentTheme="dark" />}
-          theme={themeStyles.header}
-          variant="themed"
-          borderColor={themeStyles.borderColor}
-          secondaryButtonClass={secondaryButtonClass}
-        />
+        <div className="mobile-layout-header">
+          <LayoutHeader 
+            showSourceButton={true} 
+            showEditButton={true}
+            editButton={<HomeSettings currentTheme="dark" />}
+            theme={themeStyles.header}
+            variant="themed"
+            borderColor={themeStyles.borderColor}
+            secondaryButtonClass={secondaryButtonClass}
+          />
+        </div>
 
         {/* Main Content */}
-        <main className="flex-1 flex items-center justify-center py-16">
+        <main className="mobile-layout-main flex items-center justify-center">
           <div className="container mx-auto px-4 max-w-7xl">
             <div className="flex justify-center">
               <div className="w-full max-w-md space-y-8">
@@ -107,22 +109,24 @@ export function DynamicHomePage() {
         </main>
 
         {/* Footer */}
-        <LayoutFooter variant="themed" theme={themeStyles.footer} borderColor={themeStyles.borderColor}>
-          <div className="flex items-center gap-4">
-            <HomeShareButton secondaryButtonClass={secondaryButtonClass} />
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className={secondaryButtonClass}
-            >
-              <Link href="/admin">
-                <Key className="w-4 h-4 mr-2" />
-                Admin
-              </Link>
-            </Button>
-          </div>
-        </LayoutFooter>
+        <div className="mobile-layout-footer">
+          <LayoutFooter variant="themed" theme={themeStyles.footer} borderColor={themeStyles.borderColor}>
+            <div className="flex items-center gap-4">
+              <HomeShareButton secondaryButtonClass={secondaryButtonClass} />
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className={secondaryButtonClass}
+              >
+                <Link href="/admin">
+                  <Key className="w-4 h-4 mr-2" />
+                  Admin
+                </Link>
+              </Button>
+            </div>
+          </LayoutFooter>
+        </div>
       </div>
     );
   }
@@ -131,20 +135,22 @@ export function DynamicHomePage() {
   const secondaryButtonClass = getSecondaryButtonClass(currentTheme);
 
   return (
-    <div className={`flex flex-col ${themeStyles.container}`}>
+    <div className={`mobile-layout-container ${themeStyles.container.replace('min-h-screen', '')}`}>
       {/* Header */}
-      <LayoutHeader 
-        showSourceButton={true} 
-        showEditButton={true}
-        editButton={<HomeSettings currentTheme={currentTheme} secondaryButtonClass={secondaryButtonClass} />}
-        theme={themeStyles.header}
-        variant="themed"
-        borderColor={themeStyles.borderColor}
-        secondaryButtonClass={secondaryButtonClass}
-      />
+      <div className="mobile-layout-header">
+        <LayoutHeader 
+          showSourceButton={true} 
+          showEditButton={true}
+          editButton={<HomeSettings currentTheme={currentTheme} secondaryButtonClass={secondaryButtonClass} />}
+          theme={themeStyles.header}
+          variant="themed"
+          borderColor={themeStyles.borderColor}
+          secondaryButtonClass={secondaryButtonClass}
+        />
+      </div>
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center py-16">
+      <main className="mobile-layout-main flex items-center justify-center">
         <div className="container mx-auto px-4 max-w-7xl">
           <div className="flex justify-center">
             <div className="w-full max-w-md space-y-8">
@@ -166,22 +172,24 @@ export function DynamicHomePage() {
       </main>
 
       {/* Footer */}
-      <LayoutFooter variant="themed" theme={themeStyles.footer} borderColor={themeStyles.borderColor}>
-        <div className="flex items-center gap-4">
-          <HomeShareButton secondaryButtonClass={secondaryButtonClass} />
-          <Button
-            asChild
-            variant="outline"
-            size="sm"
-            className={secondaryButtonClass}
-          >
-            <Link href="/admin">
-              <Key className="w-4 h-4 mr-2" />
-              Admin
-            </Link>
-          </Button>
-        </div>
-      </LayoutFooter>
+      <div className="mobile-layout-footer">
+        <LayoutFooter variant="themed" theme={themeStyles.footer} borderColor={themeStyles.borderColor}>
+          <div className="flex items-center gap-4">
+            <HomeShareButton secondaryButtonClass={secondaryButtonClass} />
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className={secondaryButtonClass}
+            >
+              <Link href="/admin">
+                <Key className="w-4 h-4 mr-2" />
+                Admin
+              </Link>
+            </Button>
+          </div>
+        </LayoutFooter>
+      </div>
     </div>
   );
 } 

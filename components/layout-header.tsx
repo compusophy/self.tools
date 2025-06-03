@@ -97,6 +97,7 @@ export function LayoutHeader({
               asChild
               size="sm"
               {...buttonStyling}
+              className={buttonStyling.className}
             >
               <Link href="https://github.com/compusophy/self.tools" target="_blank" rel="noopener noreferrer">
                 <GitHub />

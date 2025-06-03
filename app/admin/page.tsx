@@ -9,13 +9,15 @@ export default async function AdminPage() {
   const subdomains = await getAllSubdomains();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="mobile-layout-container bg-background">
       {/* Header */}
-      <LayoutHeader showHomeLink={true} homeButtonStyle="button" />
+      <div className="mobile-layout-header">
+        <LayoutHeader showHomeLink={true} homeButtonStyle="button" />
+      </div>
 
       {/* Main Content */}
-      <main className="flex-1 py-16">
-        <div className="container mx-auto px-4 max-w-7xl">
+      <main className="mobile-layout-main">
+        <div className="container mx-auto px-4 max-w-7xl py-8">
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold text-foreground">Settings</h1>
           </div>
@@ -25,11 +27,13 @@ export default async function AdminPage() {
       </main>
 
       {/* Footer */}
-      <LayoutFooter size="large">
-        <div className="text-sm text-muted-foreground">
-          Managing {subdomains.length} subdomain{subdomains.length !== 1 ? 's' : ''}
-        </div>
-      </LayoutFooter>
+      <div className="mobile-layout-footer">
+        <LayoutFooter size="large">
+          <div className="text-sm text-muted-foreground">
+            Managing {subdomains.length} subdomain{subdomains.length !== 1 ? 's' : ''}
+          </div>
+        </LayoutFooter>
+      </div>
     </div>
   );
 }
