@@ -2,6 +2,7 @@ import { redis } from '@/lib/redis';
 
 export type SubdomainData = {
   createdAt: number;
+  createdBy: string; // Device UUID of creator
   content: {
     title: string;
     description: string;
@@ -43,7 +44,7 @@ export async function getSubdomainContent(subdomain: string): Promise<SubdomainC
   return data?.content || null;
 }
 
-export async function createSubdomain(subdomain: string): Promise<boolean> {
+export async function createSubdomain(subdomain: string, creatorDeviceId: string, initialTheme: 'dark' | 'light' | 'color' = 'dark'): Promise<boolean> {
   const sanitizedSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
   
   const exists = await redis.get(`subdomain:${sanitizedSubdomain}`);
@@ -53,9 +54,11 @@ export async function createSubdomain(subdomain: string): Promise<boolean> {
 
   const newSubdomainData: SubdomainData = {
     createdAt: Date.now(),
+    createdBy: creatorDeviceId,
     content: {
       ...DEFAULT_CONTENT,
-      title: sanitizedSubdomain
+      title: sanitizedSubdomain,
+      theme: initialTheme
     },
     settings: DEFAULT_SETTINGS
   };
@@ -66,13 +69,19 @@ export async function createSubdomain(subdomain: string): Promise<boolean> {
 
 export async function updateSubdomainContent(
   subdomain: string, 
-  content: Partial<SubdomainContent>
+  content: Partial<SubdomainContent>,
+  userDeviceId: string
 ): Promise<boolean> {
   const sanitizedSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
   const existing = await getSubdomainData(sanitizedSubdomain);
   
   if (!existing) {
     return false;
+  }
+
+  // Check if user is the creator
+  if (existing.createdBy !== userDeviceId) {
+    return false; // Unauthorized
   }
 
   const updatedData: SubdomainData = {
@@ -90,27 +99,45 @@ export async function updateSubdomainContent(
 
 export async function getAllSubdomains() {
   const keys = await redis.keys('subdomain:*');
+  const subdomains = await Promise.all(
+    keys.map(async (key) => {
+      const data = await redis.get<SubdomainData>(key);
+      if (!data) return null;
+      return {
+        subdomain: key.replace('subdomain:', ''),
+        title: data.content.title,
+        description: data.content.description,
+        body: data.content.body,
+        theme: data.content.theme,
+        createdAt: data.createdAt,
+        createdBy: data.createdBy,
+        isPublished: data.settings.isPublished
+      };
+    })
+  );
+  return subdomains.filter(Boolean).sort((a, b) => b!.createdAt - a!.createdAt) as NonNullable<typeof subdomains[0]>[];
+}
 
-  if (!keys.length) {
-    return [];
+export async function deleteSubdomain(subdomain: string, userDeviceId: string): Promise<boolean> {
+  const sanitizedSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
+  const existing = await getSubdomainData(sanitizedSubdomain);
+  
+  if (!existing) {
+    return false;
   }
 
-  const values = await redis.mget<SubdomainData[]>(...keys);
+  // Check if user is the creator
+  if (existing.createdBy !== userDeviceId) {
+    return false; // Unauthorized
+  }
 
-  return keys.map((key: string, index: number) => {
-    const subdomain = key.replace('subdomain:', '');
-    const data = values[index];
+  await redis.del(`subdomain:${sanitizedSubdomain}`);
+  return true;
+}
 
-    return {
-      subdomain,
-      createdAt: data?.createdAt || Date.now(),
-      title: data?.content?.title || 'Untitled',
-      description: data?.content?.description || '',
-      body: data?.content?.body || '',
-      theme: data?.content?.theme || 'default',
-      isPublished: data?.settings?.isPublished || false
-    };
-  });
+export async function canUserModifySubdomain(subdomain: string, userDeviceId: string): Promise<boolean> {
+  const data = await getSubdomainData(subdomain);
+  return data ? data.createdBy === userDeviceId : false;
 }
 
 // SDK Functions for easy content management
@@ -119,23 +146,27 @@ export const SubdomainSDK = {
     return await getSubdomainData(subdomain);
   },
   
-  async updateContent(subdomain: string, content: Partial<SubdomainContent>) {
-    return await updateSubdomainContent(subdomain, content);
+  async updateContent(subdomain: string, content: Partial<SubdomainContent>, userDeviceId: string) {
+    return await updateSubdomainContent(subdomain, content, userDeviceId);
   },
   
-  async setTitle(subdomain: string, title: string) {
-    return await updateSubdomainContent(subdomain, { title });
+  async setTitle(subdomain: string, title: string, userDeviceId: string) {
+    return await updateSubdomainContent(subdomain, { title }, userDeviceId);
   },
   
-  async setDescription(subdomain: string, description: string) {
-    return await updateSubdomainContent(subdomain, { description });
+  async setDescription(subdomain: string, description: string, userDeviceId: string) {
+    return await updateSubdomainContent(subdomain, { description }, userDeviceId);
   },
   
-  async setBody(subdomain: string, body: string) {
-    return await updateSubdomainContent(subdomain, { body });
+  async setBody(subdomain: string, body: string, userDeviceId: string) {
+    return await updateSubdomainContent(subdomain, { body }, userDeviceId);
   },
   
-  async setTheme(subdomain: string, theme: SubdomainContent['theme']) {
-    return await updateSubdomainContent(subdomain, { theme });
+  async setTheme(subdomain: string, theme: SubdomainContent['theme'], userDeviceId: string) {
+    return await updateSubdomainContent(subdomain, { theme }, userDeviceId);
+  },
+
+  async canModify(subdomain: string, userDeviceId: string) {
+    return await canUserModifySubdomain(subdomain, userDeviceId);
   }
 };

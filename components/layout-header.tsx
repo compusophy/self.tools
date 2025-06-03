@@ -11,9 +11,9 @@ interface LayoutHeaderProps {
   showEditButton?: boolean;
   editButton?: React.ReactNode;
   theme?: {
-    textSecondary: string;
     textPrimary: string;
-    background?: string;
+    textSecondary: string;
+    background: string;
   };
   variant?: 'default' | 'themed';
   size?: 'default' | 'large';
@@ -21,6 +21,7 @@ interface LayoutHeaderProps {
   borderColor?: string;
   buttonClass?: string;
   lightThemeButtonClass?: string;
+  secondaryButtonClass?: string;
 }
 
 export function LayoutHeader({ 
@@ -35,7 +36,8 @@ export function LayoutHeader({
   homeButtonStyle = 'link',
   borderColor,
   buttonClass,
-  lightThemeButtonClass = ''
+  lightThemeButtonClass = '',
+  secondaryButtonClass = ''
 }: LayoutHeaderProps) {
   const paddingClass = size === 'large' ? 'py-6' : 'py-4';
   
@@ -52,12 +54,13 @@ export function LayoutHeader({
     ? `text-sm ${theme?.textSecondary || 'text-white/70'} hover:${theme?.textPrimary || 'text-white'} transition-colors`
     : `text-sm text-muted-foreground hover:text-foreground transition-colors`;
 
-  // Use custom button class only in themed mode, otherwise use original home page styling
+  // Use unified secondary button class for consistent styling
   const getButtonStyling = () => {
-    if (variant === 'themed' && buttonClass) {
-      return { className: `${buttonClass} cursor-pointer` };
+    if (secondaryButtonClass) {
+      return { variant: 'outline' as const, className: `${secondaryButtonClass} size-sm` };
     }
-    return { variant: 'outline' as const, className: `shadow-lg cursor-pointer ${lightThemeButtonClass}` };
+    // Fallback for backwards compatibility
+    return { variant: 'outline' as const, className: `shadow-lg cursor-pointer ${lightThemeButtonClass} size-sm` };
   };
 
   const buttonStyling = getButtonStyling();

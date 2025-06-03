@@ -6,7 +6,11 @@ import { protocol, rootDomain } from '@/lib/utils';
 import { useFrameContext } from '@/components/frame-provider';
 import { sdk } from '@farcaster/frame-sdk';
 
-export function HomeShareButton() {
+interface HomeShareButtonProps {
+  secondaryButtonClass?: string;
+}
+
+export function HomeShareButton({ secondaryButtonClass = '' }: HomeShareButtonProps) {
   const { frameContext, isInFrame } = useFrameContext();
 
   const handleShare = async () => {
@@ -67,7 +71,7 @@ export function HomeShareButton() {
       onClick={handleShare}
       variant="outline"
       size="sm"
-      className="shadow-lg cursor-pointer"
+      className={secondaryButtonClass || 'shadow-lg cursor-pointer'}
     >
       <Share2 className="w-4 h-4 mr-2" />
       Share

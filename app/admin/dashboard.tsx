@@ -8,8 +8,9 @@ import { deleteSubdomainAction } from '@/app/actions';
 import { type getAllSubdomains } from '@/lib/subdomains';
 import { rootDomain, protocol } from '@/lib/utils';
 import { Trash2, Palette, Rocket } from 'lucide-react';
-import { useActionState, useState } from 'react';
+import { useActionState, useState, useEffect } from 'react';
 import { sdk } from '@farcaster/frame-sdk';
+import { getOrCreateDeviceId } from '@/lib/user';
 
 type SubdomainInfo = Awaited<ReturnType<typeof getAllSubdomains>>[0];
 
@@ -19,6 +20,13 @@ interface DashboardProps {
 
 function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
   const [deleteState, deleteAction] = useActionState(deleteSubdomainAction, { success: '' });
+  const [deviceId, setDeviceId] = useState('');
+
+  useEffect(() => {
+    // Get device ID for authentication
+    const id = getOrCreateDeviceId();
+    setDeviceId(id);
+  }, []);
 
   const handleLaunchFrame = async () => {
     try {
@@ -37,6 +45,9 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
 
   // Only show title if it's different from subdomain name
   const showTitle = subdomain.title && subdomain.title !== subdomain.subdomain && subdomain.title !== 'Untitled Page';
+  
+  // Check if current user is the creator
+  const isOwner = deviceId && subdomain.createdBy === deviceId;
 
   return (
     <Card className="w-full !gap-0 !py-0">
@@ -72,26 +83,39 @@ function SubdomainCard({ subdomain }: { subdomain: SubdomainInfo }) {
             Launch
           </Button>
           
-          <form action={deleteAction}>
-            <Input
-              type="hidden"
-              name="subdomain"
-              value={subdomain.subdomain}
-            />
-            <Button
-              type="submit"
-              variant="destructive"
-              size="sm"
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete
-            </Button>
-          </form>
+          {isOwner && (
+            <form action={deleteAction}>
+              <Input
+                type="hidden"
+                name="subdomain"
+                value={subdomain.subdomain}
+              />
+              <Input
+                type="hidden"
+                name="deviceId"
+                value={deviceId}
+              />
+              <Button
+                type="submit"
+                variant="destructive"
+                size="sm"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                Delete
+              </Button>
+            </form>
+          )}
         </div>
 
         {deleteState?.success && deleteState.success !== '' && (
           <div className="text-sm text-green-600 bg-green-50 p-2 rounded-none">
             {deleteState.success}
+          </div>
+        )}
+        
+        {deleteState?.error && (
+          <div className="text-sm text-red-600 bg-red-50 p-2 rounded-none">
+            {deleteState.error}
           </div>
         )}
       </CardContent>

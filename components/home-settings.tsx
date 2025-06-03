@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import {
   Dialog,
   DialogContent,
@@ -13,20 +11,8 @@ import {
   DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
-import { Edit3, Save, X } from 'lucide-react';
-import { updateSubdomainContentAction } from '@/app/actions';
-import { type SubdomainData } from '@/lib/subdomains';
-
-interface SubdomainEditorProps {
-  subdomain: string;
-  data: SubdomainData;
-  theme?: string;
-  themeStyles?: {
-    container: string;
-    borderColor: string;
-  };
-  lightThemeButtonClass?: string;
-}
+import { Settings, Save, X } from 'lucide-react';
+import { setHomeTheme, getHomeTheme } from '@/lib/user';
 
 const themes = [
   { id: 'dark', name: 'DARK', colors: 'bg-black text-white' },
@@ -34,22 +20,35 @@ const themes = [
   { id: 'color', name: 'COLOR', colors: 'bg-gradient-to-br from-purple-600 to-pink-600 text-white' },
 ] as const;
 
-export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, lightThemeButtonClass = '' }: SubdomainEditorProps) {
+interface HomeSettingsProps {
+  currentTheme?: 'dark' | 'light' | 'color';
+  lightThemeButtonClass?: string;
+  secondaryButtonClass?: string;
+}
+
+export function HomeSettings({ currentTheme = 'dark', lightThemeButtonClass = '', secondaryButtonClass = '' }: HomeSettingsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-  
-  const [formData, setFormData] = useState({
-    title: data.content.title,
-    description: data.content.description,
-    body: data.content.body,
-    theme: data.content.theme,
-  });
+  const [selectedTheme, setSelectedTheme] = useState<'dark' | 'light' | 'color'>(currentTheme);
 
-  const borderColor = themeStyles?.borderColor || 'border-border';
+  // Update selectedTheme when modal opens or currentTheme changes
+  useEffect(() => {
+    if (isOpen) {
+      // Get the actual current theme from localStorage when modal opens
+      const actualCurrentTheme = getHomeTheme();
+      setSelectedTheme(actualCurrentTheme);
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    setSelectedTheme(currentTheme);
+  }, [currentTheme]);
+
+  const borderColor = 'border-white/20';
   
-  // Get modal background and text colors based on theme
+  // Get modal background and text colors based on theme (matching SubdomainEditor)
   const getModalStyling = () => {
-    switch (theme) {
+    switch (currentTheme) {
       case 'light':
         return {
           background: 'bg-white text-black',
@@ -75,23 +74,12 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
   const modalStyling = getModalStyling();
 
   const handleSave = () => {
-    const form = new FormData();
-    form.append('subdomain', subdomain);
-    form.append('title', formData.title);
-    form.append('description', formData.description);
-    form.append('body', formData.body);
-    form.append('theme', formData.theme);
-    
-    // Add device ID for authentication
-    if (typeof window !== 'undefined') {
-      const deviceId = localStorage.getItem('deviceId') || '';
-      form.append('deviceId', deviceId);
-    }
-
     startTransition(async () => {
-      await updateSubdomainContentAction({}, form);
+      // Save theme using user management system
+      setHomeTheme(selectedTheme);
       setIsOpen(false);
-      window.location.reload(); // Refresh to show changes
+      // Refresh to apply changes
+      window.location.reload();
     });
   };
 
@@ -101,21 +89,21 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
         <Button
           variant="outline"
           size="sm"
-          className={`shadow-lg cursor-pointer ${lightThemeButtonClass}`}
+          className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}
         >
-          <Edit3 className="w-4 h-4 mr-2" />
-          Edit
+          <Settings className="w-4 h-4 mr-2" />
+          Settings
         </Button>
       </DialogTrigger>
       <DialogContent className={`max-w-4xl h-screen flex flex-col p-0 gap-0 !border-0 [&>button]:hidden ${modalStyling.background}`}>
         {/* Header - with left/right/bottom borders */}
         <div className={`flex-shrink-0 py-4 px-4 border-l border-r border-b ${borderColor} flex items-center justify-between`}>
-          <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor}`}>Edit {subdomain}</DialogTitle>
+          <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor}`}>Settings</DialogTitle>
           <DialogClose asChild>
             <Button
               variant="outline"
               size="sm"
-              className={`shadow-lg cursor-pointer ${lightThemeButtonClass}`}
+              className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}
             >
               <X className="w-4 h-4 mr-2" />
               Cancel
@@ -135,15 +123,15 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                     <button
                       key={theme.id}
                       type="button"
-                      onClick={() => setFormData(prev => ({ ...prev, theme: theme.id }))}
+                      onClick={() => setSelectedTheme(theme.id as 'dark' | 'light' | 'color')}
                       className={`relative p-4 transition-all duration-200 ${theme.colors} ${
-                        formData.theme === theme.id 
+                        selectedTheme === theme.id 
                           ? 'ring-2 ring-blue-500 ring-offset-2 scale-105' 
                           : 'hover:scale-102 hover:ring-1 hover:ring-gray-300 hover:ring-offset-1'
                       }`}
                     >
                       {/* Selected indicator */}
-                      {formData.theme === theme.id && (
+                      {selectedTheme === theme.id && (
                         <div className="absolute -top-1 -right-1 bg-blue-500 text-white w-5 h-5 flex items-center justify-center text-xs font-medium">
                           ✓
                         </div>
@@ -154,34 +142,6 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                   ))}
                 </div>
               </div>
-
-              {/* Edit Form */}
-              <div className="space-y-8">
-                {/* Title */}
-                <div className="space-y-3">
-                  <Label htmlFor="title" className={`text-base font-medium ${modalStyling.labelColor}`}>Title</Label>
-                  <Input
-                    id="title"
-                    value={formData.title}
-                    onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                    placeholder="Page title"
-                    className={`text-base rounded-none ${modalStyling.inputColor}`}
-                  />
-                </div>
-
-                {/* Description */}
-                <div className="space-y-3">
-                  <Label htmlFor="description" className={`text-base font-medium ${modalStyling.labelColor}`}>Description</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Page description"
-                    rows={3}
-                    className={`text-base rounded-none ${modalStyling.inputColor}`}
-                  />
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -189,7 +149,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
         {/* Footer - with left/right/top borders */}
         <div className={`flex-shrink-0 py-4 border-l border-r border-t ${borderColor}`}>
           <div className="flex items-center justify-center">
-            <Button onClick={handleSave} disabled={isPending} size="sm" variant="outline" className={`shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
+            <Button onClick={handleSave} disabled={isPending} size="sm" variant="outline" className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
               <Save className="w-4 h-4 mr-2" />
               {isPending ? 'Saving...' : 'Save'}
             </Button>

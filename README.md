@@ -1,17 +1,17 @@
 # 🚀 Subdomain Platform Kit
 
-A powerful Next.js platform for creating and managing custom subdomains with AI-powered content editing, Redis-backed storage, and a simple SDK for developers.
+A powerful Next.js platform for creating and managing custom subdomains with Redis-backed storage and Farcaster frame integration.
 
 ## ✨ Features
 
 - **🌐 Dynamic Subdomain Creation** - Instantly create custom subdomains
-- **🤖 AI-Powered Editing** - Built-in Gemini 1.5 Flash integration for content improvement
 - **⚡ Redis-Backed Storage** - Fast, scalable content storage
-- **🎨 Multiple Themes** - Default, Dark, Colorful, and Minimal themes
+- **🎨 Multiple Themes** - Dark, Light, and Color themes
 - **📝 Markdown Support** - Rich content editing with markdown
 - **🔧 Simple SDK** - Easy-to-use functions for content management
 - **📱 Responsive Design** - Mobile-friendly interface
 - **⚙️ In-Place Editing** - Edit button on every subdomain page
+- **🟣 Farcaster Integration** - Frame support for Farcaster ecosystem
 
 ## 🛠️ Setup & Installation
 
@@ -23,9 +23,6 @@ Create a `.env.local` file in your project root:
 # Redis/Upstash KV
 KV_REST_API_URL=your_upstash_redis_url
 KV_REST_API_TOKEN=your_upstash_redis_token
-
-# Gemini AI (for content improvement)
-GEMINI_API_KEY=your_gemini_api_key
 
 # Domain Configuration
 ROOT_DOMAIN=yourdomain.com
@@ -64,7 +61,7 @@ console.log(data.content.title); // Page title
 console.log(data.content.body);  // Markdown content
 ```
 
-#### `SubdomainSDK.updateContent(subdomain: string, content: Partial<SubdomainContent>)`
+#### `SubdomainSDK.updateContent(subdomain: string, content: Partial<SubdomainContent>, userDeviceId: string)`
 Update any part of the subdomain content.
 
 ```typescript
@@ -72,24 +69,24 @@ await SubdomainSDK.updateContent('myblog', {
   title: 'My New Blog Title',
   description: 'Updated description',
   theme: 'dark'
-});
+}, userDeviceId);
 ```
 
-#### `SubdomainSDK.setTitle(subdomain: string, title: string)`
+#### `SubdomainSDK.setTitle(subdomain: string, title: string, userDeviceId: string)`
 Quick function to update just the title.
 
 ```typescript
-await SubdomainSDK.setTitle('myblog', 'Welcome to My Blog');
+await SubdomainSDK.setTitle('myblog', 'Welcome to My Blog', userDeviceId);
 ```
 
-#### `SubdomainSDK.setDescription(subdomain: string, description: string)`
+#### `SubdomainSDK.setDescription(subdomain: string, description: string, userDeviceId: string)`
 Update the page description.
 
 ```typescript
-await SubdomainSDK.setDescription('myblog', 'A blog about web development');
+await SubdomainSDK.setDescription('myblog', 'A blog about web development', userDeviceId);
 ```
 
-#### `SubdomainSDK.setBody(subdomain: string, body: string)`
+#### `SubdomainSDK.setBody(subdomain: string, body: string, userDeviceId: string)`
 Update the main content body (supports Markdown).
 
 ```typescript
@@ -99,20 +96,20 @@ await SubdomainSDK.setBody('myblog', `
 This is my awesome blog where I write about:
 
 - Web Development
-- AI and Machine Learning
-- **Cool Projects**
+- Cool Projects
+- **Latest Updates**
 
 ## Latest Posts
 
 Coming soon!
-`);
+`, userDeviceId);
 ```
 
-#### `SubdomainSDK.setTheme(subdomain: string, theme: 'default' | 'dark' | 'colorful' | 'minimal')`
+#### `SubdomainSDK.setTheme(subdomain: string, theme: 'dark' | 'light' | 'color', userDeviceId: string)`
 Change the visual theme.
 
 ```typescript
-await SubdomainSDK.setTheme('myblog', 'dark');
+await SubdomainSDK.setTheme('myblog', 'dark', userDeviceId);
 ```
 
 ### Server Actions (Form-based)
@@ -124,6 +121,7 @@ Create a new subdomain (used in forms).
 // In a form component
 <form action={createSubdomainAction}>
   <input name="subdomain" placeholder="your-subdomain" />
+  <input name="deviceId" value={userDeviceId} type="hidden" />
   <button type="submit">Create</button>
 </form>
 ```
@@ -136,18 +134,8 @@ const form = new FormData();
 form.append('subdomain', 'myblog');
 form.append('title', 'New Title');
 form.append('body', 'New content');
+form.append('deviceId', userDeviceId);
 await updateSubdomainContentAction({}, form);
-```
-
-#### `improveContentWithAIAction(formData: FormData)`
-Use Gemini 1.5 Flash to improve content.
-
-```typescript
-const form = new FormData();
-form.append('subdomain', 'myblog');
-form.append('content', 'Current content to improve');
-form.append('prompt', 'Make it more engaging and professional');
-const result = await improveContentWithAIAction({}, form);
 ```
 
 ## 🎯 Quick Start Examples
@@ -173,8 +161,8 @@ We build amazing things that make life better.
 ## Get Started
 Ready to try it out? [Contact us](mailto:hello@example.com)
   `,
-  theme: 'colorful'
-});
+  theme: 'color'
+}, userDeviceId);
 ```
 
 ### Example 2: Create a Developer Portfolio
@@ -198,51 +186,28 @@ I'm a **Full Stack Developer** with 5+ years of experience building scalable web
 ### E-commerce Platform
 Built a complete e-commerce solution handling 10k+ daily users.
 
-### AI Chat Application
-Developed a real-time chat app with AI integration.
+### Chat Application
+Developed a real-time chat app with modern features.
 
 ## Let's Connect
 - [GitHub](https://github.com/johndoe)
 - [LinkedIn](https://linkedin.com/in/johndoe)
 - [Email](mailto:john@example.com)
   `,
-  theme: 'minimal'
-});
-```
-
-### Example 3: AI-Powered Content Improvement
-
-```typescript
-// Get current content
-const currentData = await SubdomainSDK.get('myblog');
-
-// Improve it with AI
-const form = new FormData();
-form.append('subdomain', 'myblog');
-form.append('content', currentData.content.body);
-form.append('prompt', 'Make this content more engaging, add emojis, and improve the structure');
-
-const result = await improveContentWithAIAction({}, form);
-
-if (result.success) {
-  // Update with improved content
-  await SubdomainSDK.setBody('myblog', result.improvedContent);
-}
+  theme: 'light'
+}, userDeviceId);
 ```
 
 ## 🎨 Themes
 
-### Default Theme
-Clean, professional blue gradient background perfect for business sites.
-
 ### Dark Theme
-Modern dark gradient with light text, great for developer portfolios.
+Modern dark gradient with light text, great for developer portfolios and modern sites.
 
-### Colorful Theme
-Vibrant purple-pink-orange gradient ideal for creative projects.
+### Light Theme
+Clean white background with dark text, perfect for professional and content-focused sites.
 
-### Minimal Theme
-Clean white background with simple typography for content-focused sites.
+### Color Theme
+Vibrant gradient background ideal for creative projects and eye-catching landing pages.
 
 ## 🔧 Advanced Configuration
 
@@ -253,9 +218,6 @@ Clean white background with simple typography for content-focused sites.
 
 ### Redis Configuration
 The platform uses Upstash Redis for storage. You can also use any Redis-compatible service by updating the connection in `lib/redis.ts`.
-
-### AI Configuration
-Currently supports Gemini 1.5 Flash. To use a different AI service, modify the `improveContentWithAIAction` function in `app/actions.ts`.
 
 ## 🚀 Deployment
 
@@ -277,11 +239,12 @@ The platform works on any Node.js hosting service. Make sure to:
 ```typescript
 type SubdomainData = {
   createdAt: number;
+  createdBy: string; // Device UUID of creator
   content: {
     title: string;
     description: string;
     body: string;
-    theme: 'default' | 'dark' | 'colorful' | 'minimal';
+    theme: 'dark' | 'light' | 'color';
     lastModified: number;
   };
   settings: {
@@ -311,11 +274,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Need help? Here are some resources:
 
-- 📚 [Documentation](https://github.com/your-repo/wiki)
-- 💬 [Discord Community](https://discord.gg/your-server)
-- 📧 [Email Support](mailto:support@yourdomain.com)
 - 🐛 [Report Issues](https://github.com/your-repo/issues)
+- 📧 [Email Support](mailto:support@yourdomain.com)
 
 ---
 
-Made with ❤️ using Next.js, Redis, and Gemini AI
+Made with ❤️ using Next.js, Redis, and Farcaster Frames
