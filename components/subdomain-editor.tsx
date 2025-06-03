@@ -116,7 +116,23 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
         </Button>
       </DialogTrigger>
       <DialogContent className={`modal-mobile-container ${modalStyling.background}`}>
-        <form action={action}>
+        {/* Header */}
+        <div className="modal-mobile-header">
+          <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor}`}>Edit {subdomain}</DialogTitle>
+          <DialogClose asChild>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}
+            >
+              <X className="w-4 h-4 mr-2" />
+              Cancel
+            </Button>
+          </DialogClose>
+        </div>
+
+        <form action={action} className="flex flex-col flex-1">
           {/* Hidden inputs */}
           <input type="hidden" name="subdomain" value={subdomain} />
           <input type="hidden" name="title" value={formData.title} />
@@ -125,24 +141,8 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
           <input type="hidden" name="theme" value={formData.theme} />
           <input type="hidden" name="deviceId" value={deviceId} />
 
-          {/* Header */}
-          <div className={`modal-mobile-header`}>
-            <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor}`}>Edit {subdomain}</DialogTitle>
-            <DialogClose asChild>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}
-              >
-                <X className="w-4 h-4 mr-2" />
-                Cancel
-              </Button>
-            </DialogClose>
-          </div>
-
           {/* Scrollable Content Area */}
-          <div className={`modal-mobile-main`}>
+          <div className="modal-mobile-main">
             <div className="container mx-auto px-4 py-8 max-w-4xl">
               <div className="space-y-8">
                 {/* Theme Selector */}
@@ -205,7 +205,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
           </div>
 
           {/* Footer */}
-          <div className={`modal-mobile-footer`}>
+          <div className="modal-mobile-footer">
             <Button type="submit" disabled={isPending} size="sm" variant="outline" className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
               <Save className="w-4 h-4 mr-2" />
               {isPending ? 'Saving...' : 'Save'}
