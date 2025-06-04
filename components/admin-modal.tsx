@@ -157,10 +157,18 @@ function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInf
 
       {/* Delete Confirmation Modal */}
       <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <DialogContent className="sm:max-w-md [&>button]:hidden p-0">
+        <DialogContent className={`sm:max-w-md [&>button]:hidden p-0 ${
+          theme === 'light' 
+            ? 'bg-white border-gray-300' 
+            : theme === 'color'
+            ? 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 border-white/20'
+            : 'bg-black border-white/20'
+        }`}>
           {/* Header with same tight spacing as cards */}
           <div className="flex items-center justify-between p-4 pb-2">
-            <DialogTitle className="text-left">Delete {subdomain.subdomain}?</DialogTitle>
+            <DialogTitle className={`text-left ${
+              theme === 'light' ? 'text-black' : 'text-white'
+            }`}>Delete {subdomain.subdomain}?</DialogTitle>
             <DialogClose asChild>
               <Button
                 type="button"
@@ -176,7 +184,13 @@ function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInf
           
           {/* Content with card-like spacing */}
           <div className="px-4 pt-0 pb-2">
-            <p className="text-sm text-muted-foreground">
+            <p className={`text-sm ${
+              theme === 'light' 
+                ? 'text-gray-600' 
+                : theme === 'color'
+                ? 'text-white/80'
+                : 'text-muted-foreground'
+            }`}>
               This action cannot be undone. All content will be permanently lost.
             </p>
           </div>
@@ -186,7 +200,7 @@ function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInf
             <Button
               variant="outline"
               size="sm"
-              className="bg-red-600 text-white border border-red-600 shadow-lg cursor-pointer transition-all duration-300 hover:bg-red-700 hover:border-red-700 hover:shadow-[0_0_15px_rgba(220,38,38,0.4),0_0_30px_rgba(220,38,38,0.2),0_2px_4px_rgba(0,0,0,0.2)] hover:-translate-y-0.5"
+              className={`${cardStyling.deleteButton} shadow-lg cursor-pointer transition-all duration-300 hover:shadow-[0_0_15px_rgba(220,38,38,0.4),0_0_30px_rgba(220,38,38,0.2),0_2px_4px_rgba(0,0,0,0.2)] hover:-translate-y-0.5`}
               onClick={handleDeleteConfirm}
             >
               <Trash2 className="w-4 h-4 mr-2" />
