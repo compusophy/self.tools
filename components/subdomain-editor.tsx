@@ -72,7 +72,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
   }, [state.success]);
 
   const isOwner = data.createdBy === deviceId;
-  
+
   // Get modal background and text colors based on theme
   const getModalStyling = () => {
     switch (theme) {

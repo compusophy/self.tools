@@ -278,6 +278,13 @@
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  /* Hide scrollbars */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.mobile-layout-main::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari and Opera */
 }
 
 /* ===== MOBILE-FRIENDLY MODAL SYSTEM ===== */

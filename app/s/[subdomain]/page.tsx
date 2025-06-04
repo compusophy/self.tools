@@ -8,6 +8,7 @@ import { FrameProvider } from '@/components/frame-provider';
 import { ShareButton } from '@/components/share-button';
 import { LayoutHeader } from '@/components/layout-header';
 import { LayoutFooter } from '@/components/layout-footer';
+import { AdminModal } from '@/components/admin-modal';
 
 export async function generateMetadata({
   params
@@ -194,7 +195,10 @@ export default async function SubdomainPage({
         {/* Footer */}
         <div className="mobile-layout-footer">
           <LayoutFooter variant="themed" theme={themeStyles.footer}>
-            <ShareButton subdomain={subdomain} lightThemeButtonClass={lightThemeButtonClass} secondaryButtonClass={secondaryButtonClass} />
+            <div className="flex items-center justify-between w-full">
+              <ShareButton subdomain={subdomain} lightThemeButtonClass={lightThemeButtonClass} secondaryButtonClass={secondaryButtonClass} />
+              <AdminModal theme={subdomainData.content.theme} secondaryButtonClass={secondaryButtonClass} />
+            </div>
           </LayoutFooter>
         </div>
       </div>

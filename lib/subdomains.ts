@@ -201,6 +201,27 @@ export async function getAllSubdomains() {
   return subdomains.filter(Boolean).sort((a, b) => b!.createdAt - a!.createdAt) as NonNullable<typeof subdomains[0]>[];
 }
 
+export async function getUserSubdomains(userDeviceId: string) {
+  const keys = await redis.keys('subdomain:*');
+  const subdomains = await Promise.all(
+    keys.map(async (key) => {
+      const data = await redis.get<SubdomainData>(key);
+      if (!data || data.createdBy !== userDeviceId) return null;
+      return {
+        subdomain: key.replace('subdomain:', ''),
+        title: data.content.title,
+        description: data.content.description,
+        body: data.content.body,
+        theme: data.content.theme,
+        createdAt: data.createdAt,
+        createdBy: data.createdBy,
+        isPublished: data.settings.isPublished
+      };
+    })
+  );
+  return subdomains.filter(Boolean).sort((a, b) => a!.subdomain.localeCompare(b!.subdomain)) as NonNullable<typeof subdomains[0]>[];
+}
+
 export async function deleteSubdomain(subdomain: string, userDeviceId: string): Promise<boolean> {
   const sanitizedSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
   const existing = await getSubdomainData(sanitizedSubdomain);

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Settings, Edit3, ArrowLeft } from 'lucide-react';
+import { Settings, Edit3, ArrowLeft, Home } from 'lucide-react';
 import { protocol, rootDomain } from '@/lib/utils';
 import GitHub from '@/components/icons/github';
 
@@ -71,7 +71,7 @@ export function LayoutHeader({
                 {...buttonStyling}
               >
                 <Link href={`${protocol}://${rootDomain}`}>
-                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  <Home className="w-4 h-4 mr-2" />
                   {rootDomain}
                 </Link>
               </Button>

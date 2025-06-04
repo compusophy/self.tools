@@ -118,6 +118,20 @@ export function Dashboard({ subdomains }: DashboardProps) {
     (subdomain.title && subdomain.title.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+  // Sort subdomains: user's owned domains first (alphabetically), then all others (alphabetically)
+  const sortedSubdomains = filteredSubdomains.sort((a, b) => {
+    const aIsOwned = deviceId && a.createdBy === deviceId;
+    const bIsOwned = deviceId && b.createdBy === deviceId;
+    
+    // If ownership status is different, prioritize owned domains
+    if (aIsOwned !== bIsOwned) {
+      return aIsOwned ? -1 : 1;
+    }
+    
+    // If both have same ownership status, sort alphabetically by subdomain name
+    return a.subdomain.localeCompare(b.subdomain);
+  });
+
   return (
     <div className="space-y-6">
       {/* Search */}
@@ -135,7 +149,7 @@ export function Dashboard({ subdomains }: DashboardProps) {
 
       {/* Subdomains List */}
       <div className="space-y-4">
-        {filteredSubdomains.length === 0 ? (
+        {sortedSubdomains.length === 0 ? (
           <Card>
             <CardContent className="p-6 text-center">
               <p className="text-muted-foreground">
@@ -150,7 +164,7 @@ export function Dashboard({ subdomains }: DashboardProps) {
           </Card>
         ) : (
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {filteredSubdomains.map((subdomain) => (
+            {sortedSubdomains.map((subdomain) => (
               <SubdomainCard key={subdomain.subdomain} subdomain={subdomain} />
             ))}
           </div>

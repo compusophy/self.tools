@@ -1,13 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Crown } from 'lucide-react';
 import { LayoutHeader } from '@/components/layout-header';
 import { LayoutFooter } from '@/components/layout-footer';
 import { HomeShareButton } from '@/components/home-share-button';
 import { HomeSettings } from '@/components/home-settings';
+import { AdminModal } from '@/components/admin-modal';
 import { SubdomainForm } from '@/app/subdomain-form';
 import { rootDomain } from '@/lib/utils';
 import { getHomeTheme, getOrCreateDeviceId } from '@/lib/user';
@@ -109,17 +107,7 @@ export function DynamicHomePage() {
           <LayoutFooter variant="themed" theme={themeStyles.footer}>
             <div className="flex items-center justify-between w-full">
               <HomeShareButton secondaryButtonClass={secondaryButtonClass} />
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className={secondaryButtonClass}
-              >
-                <Link href="/admin">
-                  <Crown className="w-4 h-4 mr-2" />
-                  Admin
-                </Link>
-              </Button>
+              <AdminModal theme="dark" secondaryButtonClass={secondaryButtonClass} />
             </div>
           </LayoutFooter>
         </div>
@@ -171,17 +159,7 @@ export function DynamicHomePage() {
         <LayoutFooter variant="themed" theme={themeStyles.footer}>
           <div className="flex items-center justify-between w-full">
             <HomeShareButton secondaryButtonClass={secondaryButtonClass} />
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className={secondaryButtonClass}
-            >
-              <Link href="/admin">
-                <Crown className="w-4 h-4 mr-2" />
-                Admin
-              </Link>
-            </Button>
+            <AdminModal theme={currentTheme} secondaryButtonClass={secondaryButtonClass} />
           </div>
         </LayoutFooter>
       </div>
