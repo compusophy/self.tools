@@ -106,7 +106,7 @@ function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInf
       </CardHeader>
       
       <CardContent className="p-4 pt-0 space-y-2">
-        <div className="flex gap-2">
+        <div className="flex gap-4">
           <Button
             asChild
             variant="outline"
@@ -157,23 +157,32 @@ function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInf
 
       {/* Delete Confirmation Modal */}
       <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Delete {subdomain.subdomain}?</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
+        <DialogContent className="sm:max-w-md [&>button]:hidden p-0">
+          {/* Header with same tight spacing as cards */}
+          <div className="flex items-center justify-between p-4 pb-2">
+            <DialogTitle className="text-left">Delete {subdomain.subdomain}?</DialogTitle>
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className={cardStyling.button}
+              >
+                <X className="w-4 h-4 mr-2" />
+                Close
+              </Button>
+            </DialogClose>
+          </div>
+          
+          {/* Content with card-like spacing */}
+          <div className="px-4 pt-0 pb-2">
             <p className="text-sm text-muted-foreground">
               This action cannot be undone. All content will be permanently lost.
             </p>
           </div>
-          <div className="flex justify-end gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowDeleteConfirm(false)}
-            >
-              Cancel
-            </Button>
+          
+          {/* Footer with card-like spacing */}
+          <div className="px-4 pb-4 flex justify-center">
             <Button
               variant="outline"
               size="sm"
@@ -371,7 +380,7 @@ export function AdminModal({ theme = 'dark', secondaryButtonClass = '' }: AdminM
                       </CardContent>
                     </Card>
                   ) : (
-                    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                       {filteredSubdomains.map((subdomain) => (
                         <SubdomainCard 
                           key={subdomain.subdomain} 
