@@ -34,6 +34,43 @@ type SubdomainInfo = {
   isPublished: boolean;
 };
 
+// Get theme-specific card and button styling - SINGLE SOURCE OF TRUTH
+const getCardStyling = (theme: 'dark' | 'light' | 'color') => {
+  switch (theme) {
+    case 'light':
+      return {
+        card: 'bg-white border-gray-300 text-black',
+        title: 'text-black',
+        button: 'btn-secondary-light',
+        deleteButton: 'btn-secondary-light bg-red-600 hover:bg-red-700',
+        input: 'bg-white border-gray-300 text-black',
+        text: 'text-black',
+        textSecondary: 'text-gray-600'
+      };
+    case 'color':
+      return {
+        card: 'bg-white/10 border-white/20 text-white',
+        title: 'text-white',
+        button: 'btn-secondary-color',
+        deleteButton: 'btn-secondary-color bg-red-500/80 !text-white hover:bg-red-600/90',
+        input: 'bg-white/10 border-white/30 text-white placeholder:text-white/60',
+        text: 'text-white',
+        textSecondary: 'text-white/80'
+      };
+    case 'dark':
+    default:
+      return {
+        card: 'bg-white/10 border-white/20 text-white',
+        title: 'text-white',
+        button: 'btn-secondary-dark',
+        deleteButton: 'btn-secondary-dark bg-red-600 !text-white hover:bg-red-700',
+        input: 'bg-white/20 border-white/30 text-white',
+        text: 'text-white',
+        textSecondary: 'text-muted-foreground'
+      };
+  }
+};
+
 function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInfo, onDelete: () => void, theme: 'dark' | 'light' | 'color' }) {
   const [deleteState, deleteAction] = useActionState(deleteSubdomainAction, { success: '' });
   const [deviceId, setDeviceId] = useState('');
@@ -62,35 +99,7 @@ function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInf
     });
   };
 
-  // Get theme-specific card and button styling
-  const getCardStyling = () => {
-    switch (theme) {
-      case 'light':
-        return {
-          card: 'bg-white border-gray-300 text-black',
-          title: 'text-black',
-          button: 'btn-secondary-light',
-          deleteButton: 'btn-secondary-light bg-red-600 hover:bg-red-700'
-        };
-      case 'color':
-        return {
-          card: 'bg-white/10 border-white/20 text-white',
-          title: 'text-white',
-          button: 'btn-secondary-color',
-          deleteButton: 'btn-secondary-color bg-red-500/80 !text-white hover:bg-red-600/90'
-        };
-      case 'dark':
-      default:
-        return {
-          card: 'bg-white/10 border-white/20 text-white',
-          title: 'text-white',
-          button: 'btn-secondary-dark',
-          deleteButton: 'btn-secondary-dark bg-red-600 !text-white hover:bg-red-700'
-        };
-    }
-  };
-
-  const cardStyling = getCardStyling();
+  const cardStyling = getCardStyling(theme);
 
   return (
     <Card className={`w-full !gap-0 !py-0 ${cardStyling.card}`}>
@@ -157,18 +166,10 @@ function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInf
 
       {/* Delete Confirmation Modal */}
       <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <DialogContent className={`sm:max-w-md [&>button]:hidden p-0 ${
-          theme === 'light' 
-            ? 'bg-white border-gray-300' 
-            : theme === 'color'
-            ? 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 border-white/20'
-            : 'bg-black border-white/20'
-        }`}>
+        <DialogContent className={`sm:max-w-md [&>button]:hidden p-0 ${cardStyling.card}`}>
           {/* Header with same tight spacing as cards */}
           <div className="flex items-center justify-between p-4 pb-2">
-            <DialogTitle className={`text-left ${
-              theme === 'light' ? 'text-black' : 'text-white'
-            }`}>Delete {subdomain.subdomain}?</DialogTitle>
+            <DialogTitle className={`text-left ${cardStyling.text}`}>Delete {subdomain.subdomain}?</DialogTitle>
             <DialogClose asChild>
               <Button
                 type="button"
@@ -184,13 +185,7 @@ function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInf
           
           {/* Content with card-like spacing */}
           <div className="px-4 pt-0 pb-2">
-            <p className={`text-sm ${
-              theme === 'light' 
-                ? 'text-gray-600' 
-                : theme === 'color'
-                ? 'text-white/80'
-                : 'text-muted-foreground'
-            }`}>
+            <p className={`text-sm ${cardStyling.textSecondary}`}>
               This action cannot be undone. All content will be permanently lost.
             </p>
           </div>
@@ -262,61 +257,29 @@ export function AdminModal({ theme = 'dark', secondaryButtonClass = '' }: AdminM
     }
   };
 
-  // Get theme-specific modal styling
-  const getModalStyling = () => {
+  // USE SINGLE SOURCE OF TRUTH FOR ALL STYLING
+  const cardStyling = getCardStyling(theme);
+
+  // Get modal background (different from card backgrounds - needs to be solid)
+  const getModalBackground = () => {
     switch (theme) {
       case 'light':
-        return {
-          background: 'bg-white',
-          labelColor: 'text-black'
-        };
+        return 'bg-white border-gray-300';
       case 'color':
-        return {
-          background: 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500',
-          labelColor: 'text-white'
-        };
+        return 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 border-white/20';
       case 'dark':
       default:
-        return {
-          background: 'bg-black',
-          labelColor: 'text-white'
-        };
+        return 'bg-black border-white/20';
     }
   };
-
-  const modalStyling = getModalStyling();
 
   // Get secondary button class for consistent styling
   const getSecondaryButtonClass = () => {
     if (secondaryButtonClass) return secondaryButtonClass;
-    
-    switch (theme) {
-      case 'light':
-        return 'btn-secondary-light';
-      case 'color':
-        return 'btn-secondary-color';
-      case 'dark':
-      default:
-        return 'btn-secondary-dark';
-    }
+    return cardStyling.button;
   };
 
   const buttonClass = getSecondaryButtonClass();
-
-  // Get theme-specific container styling for cards grid
-  const getContainerStyling = () => {
-    switch (theme) {
-      case 'light':
-        return 'bg-gray-50/50';
-      case 'color':
-        return '';
-      case 'dark':
-      default:
-        return '';
-    }
-  };
-
-  const containerStyling = getContainerStyling();
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -330,11 +293,11 @@ export function AdminModal({ theme = 'dark', secondaryButtonClass = '' }: AdminM
           Admin
         </Button>
       </DialogTrigger>
-      <DialogContent className={`modal-mobile-container ${modalStyling.background}`}>
+      <DialogContent className={`modal-mobile-container ${getModalBackground()}`}>
         {/* Header */}
         <div className="modal-mobile-header">
-          <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor} flex items-center gap-2`}>
-            <Crown className={`w-5 h-5 ${modalStyling.labelColor}`} />
+          <DialogTitle className={`text-xl font-bold ${cardStyling.text} flex items-center gap-2`}>
+            <Crown className={`w-5 h-5 ${cardStyling.text}`} />
             Admin
           </DialogTitle>
           <DialogClose asChild>
@@ -354,7 +317,7 @@ export function AdminModal({ theme = 'dark', secondaryButtonClass = '' }: AdminM
         <div className="modal-mobile-main">
           <div className="container mx-auto px-4 py-8 max-w-4xl">
             {initialLoading && subdomains.length === 0 ? (
-              <div className={`text-center ${modalStyling.labelColor}`}>
+              <div className={`text-center ${cardStyling.text}`}>
                 Loading your subdomains...
               </div>
             ) : (
@@ -365,29 +328,23 @@ export function AdminModal({ theme = 'dark', secondaryButtonClass = '' }: AdminM
                     placeholder="Search your subdomains..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className={`max-w-md ${
-                      theme === 'light' 
-                        ? 'bg-white border-gray-300 text-black' 
-                        : theme === 'color'
-                        ? 'bg-white/10 border-white/30 text-white placeholder:text-white/60'
-                        : 'bg-white/20 border-white/30 text-white'
-                    }`}
+                    className={`max-w-md ${cardStyling.input}`}
                   />
-                  <p className={`text-sm ${modalStyling.labelColor} opacity-70`}>
+                  <p className={`text-sm ${cardStyling.text} opacity-70`}>
                     Showing {filteredSubdomains.length} of {subdomains.length} subdomains
                   </p>
                 </div>
 
                 {/* Subdomains List */}
-                <div className={`space-y-4 ${containerStyling}`}>
+                <div className="space-y-4">
                   {filteredSubdomains.length === 0 ? (
-                    <Card className={theme === 'light' ? 'bg-white border-gray-300' : theme === 'color' ? 'bg-white/10 border-white/20' : 'bg-white/10 border-white/20'}>
+                    <Card className={cardStyling.card}>
                       <CardContent className="p-6 text-center">
-                        <p className={modalStyling.labelColor}>
+                        <p className={cardStyling.text}>
                           {searchTerm ? 'No subdomains match your search.' : 'You haven\'t created any subdomains yet.'}
                         </p>
                         {!searchTerm && (
-                          <p className={`text-sm ${modalStyling.labelColor} opacity-60 mt-2`}>
+                          <p className={`text-sm ${cardStyling.text} opacity-60 mt-2`}>
                             Create your first subdomain from the main page!
                           </p>
                         )}
