@@ -93,7 +93,10 @@ export function HomeSettings({ currentTheme = 'dark', lightThemeButtonClass = ''
       <DialogContent className={`modal-mobile-container ${modalStyling.background}`}>
         {/* Header */}
         <div className="modal-mobile-header">
-          <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor}`}>Settings</DialogTitle>
+          <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor} flex items-center gap-2`}>
+            <Settings className={`w-5 h-5 ${modalStyling.labelColor}`} />
+            Settings
+          </DialogTitle>
           <DialogClose asChild>
             <Button
               variant="outline"

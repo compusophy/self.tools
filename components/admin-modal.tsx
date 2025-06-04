@@ -310,7 +310,10 @@ export function AdminModal({ theme = 'dark', secondaryButtonClass = '' }: AdminM
       <DialogContent className={`modal-mobile-container ${modalStyling.background}`}>
         {/* Header */}
         <div className="modal-mobile-header">
-          <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor}`}>Admin</DialogTitle>
+          <DialogTitle className={`text-xl font-bold ${modalStyling.labelColor} flex items-center gap-2`}>
+            <Crown className={`w-5 h-5 ${modalStyling.labelColor}`} />
+            Admin
+          </DialogTitle>
           <DialogClose asChild>
             <Button
               type="button"
