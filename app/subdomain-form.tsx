@@ -83,11 +83,17 @@ export function SubdomainForm({ theme = 'dark' }: SubdomainFormProps) {
     {}
   );
   const [deviceId, setDeviceId] = useState('');
+  const [userFont, setUserFont] = useState('mono');
 
   useEffect(() => {
     // Get or create device ID when component mounts
     const id = getOrCreateDeviceId();
     setDeviceId(id);
+    
+    // Get user's current font setting
+    const savedFont = localStorage.getItem('home-font');
+    const currentFont = (savedFont as 'mono' | 'serif' | 'sans') || 'mono';
+    setUserFont(currentFont);
   }, []);
 
   // Get theme-specific button styling
@@ -131,6 +137,7 @@ export function SubdomainForm({ theme = 'dark' }: SubdomainFormProps) {
     <form action={action} className="space-y-4">
       <input type="hidden" name="deviceId" value={deviceId} />
       <input type="hidden" name="homeTheme" value={theme} />
+      <input type="hidden" name="homeFont" value={userFont} />
       <SubdomainInput defaultValue={state?.subdomain} theme={theme} />
 
       {state?.error && (

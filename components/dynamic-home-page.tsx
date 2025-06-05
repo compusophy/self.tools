@@ -10,6 +10,12 @@ import { SubdomainForm } from '@/app/subdomain-form';
 import { rootDomain } from '@/lib/utils';
 import { getHomeTheme, getOrCreateDeviceId } from '@/lib/user';
 
+const fonts = [
+  { id: 'mono', name: 'MONO', family: 'var(--font-jetbrains-mono), monospace' },
+  { id: 'serif', name: 'SERIF', family: 'Georgia, Times, serif' },
+  { id: 'sans', name: 'SANS', family: 'system-ui, -apple-system, sans-serif' },
+] as const;
+
 export function DynamicHomePage() {
   const [currentTheme, setCurrentTheme] = useState<'dark' | 'light' | 'color'>('dark');
   const [mounted, setMounted] = useState(false);
@@ -19,6 +25,13 @@ export function DynamicHomePage() {
     getOrCreateDeviceId();
     const theme = getHomeTheme();
     setCurrentTheme(theme);
+    
+    // Load and apply saved font
+    const savedFont = localStorage.getItem('home-font') as 'mono' | 'serif' | 'sans' || 'mono';
+    const fontFamily = fonts.find(f => f.id === savedFont)?.family || fonts[0].family;
+    document.documentElement.style.setProperty('--selected-font', fontFamily);
+    document.body.style.fontFamily = fontFamily;
+    
     setMounted(true);
   }, []);
 

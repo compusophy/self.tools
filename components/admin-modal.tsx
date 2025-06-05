@@ -101,6 +101,19 @@ function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInf
 
   const cardStyling = getCardStyling(theme);
 
+  // Get solid modal background for delete confirmation (not transparent like cards)
+  const getDeleteModalBackground = () => {
+    switch (theme) {
+      case 'light':
+        return 'bg-white';
+      case 'color':
+        return 'bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500';
+      case 'dark':
+      default:
+        return 'bg-black';
+    }
+  };
+
   return (
     <Card className={`w-full !gap-0 !py-0 ${cardStyling.card}`}>
       <CardHeader className="p-4 pb-2">
@@ -166,7 +179,7 @@ function SubdomainCard({ subdomain, onDelete, theme }: { subdomain: SubdomainInf
 
       {/* Delete Confirmation Modal */}
       <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-        <DialogContent className={`sm:max-w-md [&>button]:hidden p-0 ${cardStyling.card}`}>
+        <DialogContent className={`sm:max-w-md [&>button]:hidden p-0 ${getDeleteModalBackground()}`}>
           {/* Header with same tight spacing as cards */}
           <div className="flex items-center justify-between p-4 pb-2">
             <DialogTitle className={`text-left ${cardStyling.text}`}>Delete {subdomain.subdomain}?</DialogTitle>

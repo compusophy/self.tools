@@ -13,6 +13,7 @@ export async function createSubdomainAction(
   const subdomain = formData.get('subdomain') as string;
   const deviceId = formData.get('deviceId') as string;
   const homeTheme = (formData.get('homeTheme') as 'dark' | 'light' | 'color') || 'dark';
+  const homeFont = (formData.get('homeFont') as 'mono' | 'serif' | 'sans') || 'mono';
 
   if (!subdomain) {
     return { success: false, error: 'Subdomain is required' };
@@ -49,7 +50,7 @@ export async function createSubdomainAction(
     redirect(`/s/${sanitizedSubdomain}`);
   }
 
-  const success = await createSubdomain(sanitizedSubdomain, deviceId, homeTheme);
+  const success = await createSubdomain(sanitizedSubdomain, deviceId, homeTheme, homeFont);
   
   if (!success) {
     return {
@@ -92,6 +93,7 @@ export async function updateSubdomainContentAction(
   const description = formData.get('description') as string;
   const body = formData.get('body') as string;
   const theme = formData.get('theme') as SubdomainContent['theme'];
+  const font = formData.get('font') as string;
   const deviceId = formData.get('deviceId') as string;
 
   if (!subdomain) {
@@ -107,6 +109,7 @@ export async function updateSubdomainContentAction(
   if (description) updates.description = description;
   if (body) updates.body = body;
   if (theme) updates.theme = theme;
+  if (font) (updates as any).font = font;
 
   const success = await updateSubdomainContent(subdomain, updates, deviceId);
 

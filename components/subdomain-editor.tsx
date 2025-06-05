@@ -45,6 +45,12 @@ const themes = [
   { id: 'color', name: 'COLOR', colors: 'bg-gradient-to-br from-purple-600 to-pink-600 text-white' },
 ] as const;
 
+const fonts = [
+  { id: 'mono', name: 'MONO', family: 'var(--font-jetbrains-mono), monospace' },
+  { id: 'serif', name: 'SERIF', family: 'Georgia, Times, serif' },
+  { id: 'sans', name: 'SANS', family: 'system-ui, -apple-system, sans-serif' },
+] as const;
+
 export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, lightThemeButtonClass = '', secondaryButtonClass = '' }: SubdomainEditorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [state, action, isPending] = useActionState(updateSubdomainContentAction, { success: false, message: '' });
@@ -55,6 +61,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
     title: data.content.title,
     description: data.content.description,
     theme: data.content.theme,
+    font: (data.content as any).font || 'mono',
   });
 
   useEffect(() => {
@@ -139,35 +146,79 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
           <input type="hidden" name="description" value={formData.description} />
           <input type="hidden" name="body" value={data.content.body} />
           <input type="hidden" name="theme" value={formData.theme} />
+          <input type="hidden" name="font" value={formData.font} />
           <input type="hidden" name="deviceId" value={deviceId} />
 
           {/* Scrollable Content Area */}
           <div className="modal-mobile-main">
             <div className="container mx-auto px-4 py-8 max-w-4xl">
               <div className="space-y-8">
-                {/* Theme Selector */}
+                {/* Font Selector */}
                 <div className="space-y-4">
-                  <Label className={`text-base font-medium ${modalStyling.labelColor}`}>Theme</Label>
+                  <Label className={`text-base font-medium ${modalStyling.labelColor}`}>Font</Label>
                   <div className="grid grid-cols-3 gap-4">
-                    {themes.map((theme) => (
+                    {fonts.map((font) => (
                       <button
-                        key={theme.id}
+                        key={font.id}
                         type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, theme: theme.id }))}
-                        className={`relative p-4 transition-all duration-200 ${theme.colors} ${
-                          formData.theme === theme.id 
-                            ? 'ring-2 ring-blue-500 ring-offset-2 scale-105' 
+                        onClick={() => setFormData(prev => ({ ...prev, font: font.id }))}
+                        className={`relative p-4 transition-all duration-200 ${
+                          theme === 'light' 
+                            ? 'bg-white text-black border border-gray-300' 
+                            : theme === 'color'
+                            ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white'
+                            : 'bg-black text-white'
+                        } ${
+                          formData.font === font.id 
+                            ? theme === 'light'
+                              ? 'ring-2 ring-black ring-offset-2 scale-105'
+                              : 'ring-2 ring-white ring-offset-2 scale-105'
                             : 'hover:scale-102 hover:ring-1 hover:ring-gray-300 hover:ring-offset-1'
                         }`}
+                        style={{ fontFamily: font.family }}
                       >
                         {/* Selected indicator */}
-                        {formData.theme === theme.id && (
-                          <div className="absolute -top-1 -right-1 bg-blue-500 text-white w-5 h-5 flex items-center justify-center text-xs font-medium">
+                        {formData.font === font.id && (
+                          <div className={`absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-medium ${
+                            theme === 'light' ? 'bg-black text-white' : 'bg-white text-black'
+                          }`}>
                             ✓
                           </div>
                         )}
                         
-                        <div className="text-sm font-medium tracking-wide py-1">{theme.name}</div>
+                        <div className={`text-sm font-medium tracking-wide py-1 ${modalStyling.labelColor}`}>{font.name}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Theme Selector */}
+                <div className="space-y-4">
+                  <Label className={`text-base font-medium ${modalStyling.labelColor}`}>Theme</Label>
+                  <div className="grid grid-cols-3 gap-4">
+                    {themes.map((themeOption) => (
+                      <button
+                        key={themeOption.id}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, theme: themeOption.id }))}
+                        className={`relative p-4 transition-all duration-200 ${themeOption.colors} ${
+                          formData.theme === themeOption.id 
+                            ? theme === 'light'
+                              ? 'ring-2 ring-black ring-offset-2 scale-105'
+                              : 'ring-2 ring-white ring-offset-2 scale-105'
+                            : 'hover:scale-102 hover:ring-1 hover:ring-gray-300 hover:ring-offset-1'
+                        }`}
+                      >
+                        {/* Selected indicator */}
+                        {formData.theme === themeOption.id && (
+                          <div className={`absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-medium ${
+                            theme === 'light' ? 'bg-black text-white' : 'bg-white text-black'
+                          }`}>
+                            ✓
+                          </div>
+                        )}
+                        
+                        <div className="text-sm font-medium tracking-wide py-1">{themeOption.name}</div>
                       </button>
                     ))}
                   </div>

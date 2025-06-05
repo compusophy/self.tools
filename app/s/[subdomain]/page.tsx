@@ -9,6 +9,7 @@ import { ShareButton } from '@/components/share-button';
 import { LayoutHeader } from '@/components/layout-header';
 import { LayoutFooter } from '@/components/layout-footer';
 import { AdminModal } from '@/components/admin-modal';
+import { SubdomainFontProvider } from '@/components/subdomain-font-provider';
 
 export async function generateMetadata({
   params
@@ -151,57 +152,59 @@ export default async function SubdomainPage({
 
   return (
     <FrameProvider subdomain={subdomain}>
-      <div className={`mobile-layout-container ${themeStyles.container.replace('min-h-screen', '')}`}>
-        {/* Header */}
-        <div className="mobile-layout-header">
-          <LayoutHeader 
-            showHomeLink={true}
-            homeButtonStyle="button"
-            showEditButton={subdomainData.settings.allowEditing}
-            editButton={<SubdomainEditor subdomain={subdomain} data={subdomainData} theme={subdomainData.content.theme} themeStyles={themeStyles} lightThemeButtonClass={lightThemeButtonClass} secondaryButtonClass={secondaryButtonClass} />}
-            theme={themeStyles.header}
-            variant="themed"
-            secondaryButtonClass={secondaryButtonClass}
-          />
-        </div>
+      <SubdomainFontProvider selectedFont={(subdomainData.content as any).font || 'mono'}>
+        <div className={`mobile-layout-container ${themeStyles.container.replace('min-h-screen', '')}`}>
+          {/* Header */}
+          <div className="mobile-layout-header">
+            <LayoutHeader 
+              showHomeLink={true}
+              homeButtonStyle="button"
+              showEditButton={subdomainData.settings.allowEditing}
+              editButton={<SubdomainEditor subdomain={subdomain} data={subdomainData} theme={subdomainData.content.theme} themeStyles={themeStyles} lightThemeButtonClass={lightThemeButtonClass} secondaryButtonClass={secondaryButtonClass} />}
+              theme={themeStyles.header}
+              variant="themed"
+              secondaryButtonClass={secondaryButtonClass}
+            />
+          </div>
 
-        {/* Main Content */}
-        <main className="mobile-layout-main flex items-center justify-center">
-          <div className="container mx-auto px-4 max-w-7xl">
-            <div className="flex justify-center">
-              <div className="w-full max-w-4xl space-y-8">
-                {/* Header Section */}
-                <div className="text-center">
-                  <h1 className={`text-5xl font-bold mb-6 ${subdomainData.content.theme === 'light' ? 'text-black' : 'text-white'}`}>
-                    {subdomainData.content.title}
-                  </h1>
-                  <p className={`text-xl max-w-2xl mx-auto ${subdomainData.content.theme === 'light' ? 'text-gray-600' : subdomainData.content.theme === 'color' ? 'text-white/80' : 'text-gray-300'}`}>
-                    {subdomainData.content.description}
-                  </p>
-                </div>
+          {/* Main Content */}
+          <main className="mobile-layout-main flex items-center justify-center">
+            <div className="container mx-auto px-4 max-w-7xl">
+              <div className="flex justify-center">
+                <div className="w-full max-w-4xl space-y-8">
+                  {/* Header Section */}
+                  <div className="text-center">
+                    <h1 className={`text-5xl font-bold mb-6 ${subdomainData.content.theme === 'light' ? 'text-black' : 'text-white'}`}>
+                      {subdomainData.content.title}
+                    </h1>
+                    <p className={`text-xl max-w-2xl mx-auto ${subdomainData.content.theme === 'light' ? 'text-gray-600' : subdomainData.content.theme === 'color' ? 'text-white/80' : 'text-gray-300'}`}>
+                      {subdomainData.content.description}
+                    </p>
+                  </div>
 
-                {/* Body Content */}
-                <div className="text-center">
-                  <div 
-                    className={`${subdomainData.content.theme === 'light' ? 'text-gray-700' : subdomainData.content.theme === 'color' ? 'text-white/90' : 'text-gray-300'}`}
-                    dangerouslySetInnerHTML={{ __html: processedBody }}
-                  />
+                  {/* Body Content */}
+                  <div className="text-center">
+                    <div 
+                      className={`${subdomainData.content.theme === 'light' ? 'text-gray-700' : subdomainData.content.theme === 'color' ? 'text-white/90' : 'text-gray-300'}`}
+                      dangerouslySetInnerHTML={{ __html: processedBody }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </main>
+          </main>
 
-        {/* Footer */}
-        <div className="mobile-layout-footer">
-          <LayoutFooter variant="themed" theme={themeStyles.footer}>
-            <div className="flex items-center justify-between w-full">
-              <ShareButton subdomain={subdomain} lightThemeButtonClass={lightThemeButtonClass} secondaryButtonClass={secondaryButtonClass} />
-              <AdminModal theme={subdomainData.content.theme} secondaryButtonClass={secondaryButtonClass} />
-            </div>
-          </LayoutFooter>
+          {/* Footer */}
+          <div className="mobile-layout-footer">
+            <LayoutFooter variant="themed" theme={themeStyles.footer}>
+              <div className="flex items-center justify-between w-full">
+                <ShareButton subdomain={subdomain} lightThemeButtonClass={lightThemeButtonClass} secondaryButtonClass={secondaryButtonClass} />
+                <AdminModal theme={subdomainData.content.theme} secondaryButtonClass={secondaryButtonClass} />
+              </div>
+            </LayoutFooter>
+          </div>
         </div>
-      </div>
+      </SubdomainFontProvider>
     </FrameProvider>
   );
 }

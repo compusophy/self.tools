@@ -9,6 +9,7 @@ export type SubdomainData = {
     body: string;
     theme: 'dark' | 'light' | 'color';
     lastModified: number;
+    font: 'mono' | 'serif' | 'sans';
   };
   settings: {
     allowEditing: boolean;
@@ -23,7 +24,8 @@ const DEFAULT_CONTENT: SubdomainContent = {
   description: 'Ready to customize.',
   body: ``,
   theme: 'dark',
-  lastModified: Date.now()
+  lastModified: Date.now(),
+  font: 'mono'
 };
 
 const DEFAULT_SETTINGS = {
@@ -44,7 +46,12 @@ export async function getSubdomainContent(subdomain: string): Promise<SubdomainC
   return data?.content || null;
 }
 
-export async function createSubdomain(subdomain: string, creatorDeviceId: string, initialTheme: 'dark' | 'light' | 'color' = 'dark'): Promise<boolean> {
+export async function createSubdomain(
+  subdomain: string, 
+  creatorDeviceId: string, 
+  initialTheme: 'dark' | 'light' | 'color' = 'dark',
+  initialFont: 'mono' | 'serif' | 'sans' = 'mono'
+): Promise<boolean> {
   const sanitizedSubdomain = subdomain.toLowerCase().replace(/[^a-z0-9-]/g, '');
   
   const exists = await redis.get(`subdomain:${sanitizedSubdomain}`);
@@ -58,8 +65,9 @@ export async function createSubdomain(subdomain: string, creatorDeviceId: string
     content: {
       ...DEFAULT_CONTENT,
       title: sanitizedSubdomain,
-      theme: initialTheme
-    },
+      theme: initialTheme,
+      font: initialFont
+    } as any,
     settings: DEFAULT_SETTINGS
   };
 
