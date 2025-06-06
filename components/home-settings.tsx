@@ -144,8 +144,8 @@ export function HomeSettings({ currentTheme = 'dark', lightThemeButtonClass = ''
         </div>
 
         {/* Scrollable Content Area */}
-        <div className="modal-mobile-main">
-          <div className="container mx-auto px-4 py-8 max-w-4xl">
+                  <div className="modal-mobile-main">
+            <div className="px-4 py-8">
             <div className="space-y-8">
               {/* Font Selector */}
               <div className="space-y-4">

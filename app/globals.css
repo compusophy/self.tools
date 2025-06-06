@@ -292,8 +292,9 @@
 
 /* Modal container - full screen flexbox with proper mobile viewport handling */
 .modal-mobile-container {
-  @apply max-w-4xl !border-0;
+  @apply !border-0;
   width: 100vw;
+  max-width: 100vw;
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height for mobile browsers */
   max-height: 100vh;
@@ -331,3 +332,5 @@
 .modal-mobile-footer {
   @apply flex-shrink-0 py-4 flex items-center justify-center;
 }
+
+

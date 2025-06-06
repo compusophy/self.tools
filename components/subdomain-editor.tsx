@@ -19,6 +19,9 @@ import { type SubdomainData } from '@/lib/subdomains';
 import { getOrCreateDeviceId } from '@/lib/user';
 import { useActionState } from 'react';
 import { claimSubdomainOwnershipAction } from '@/app/actions';
+import { DescriptionEditorModal } from '@/components/description-editor-modal';
+import { TitleEditorModal } from '@/components/title-editor-modal';
+import { CollapsibleCard } from '@/components/collapsible-card';
 
 interface SubdomainEditorProps {
   subdomain: string;
@@ -151,18 +154,16 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
 
           {/* Scrollable Content Area */}
           <div className="modal-mobile-main">
-            <div className="container mx-auto px-4 py-8 max-w-4xl">
-              <div className="space-y-8">
-                {/* Font Selector */}
-                <div className="space-y-4">
-                  <Label className={`text-base font-medium ${modalStyling.labelColor}`}>Font</Label>
-                  <div className="grid grid-cols-3 gap-4">
+            <div className="px-4 py-8">
+              <div className="space-y-4">
+                <CollapsibleCard title="Font" theme={theme}>
+                  <div className="grid grid-cols-3 gap-3">
                     {fonts.map((font) => (
                       <button
                         key={font.id}
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, font: font.id }))}
-                        className={`relative p-4 transition-all duration-200 ${
+                        className={`relative p-2 transition-all duration-200 ${
                           theme === 'light' 
                             ? 'bg-white text-black border border-gray-300' 
                             : theme === 'color'
@@ -171,86 +172,74 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                         } ${
                           formData.font === font.id 
                             ? theme === 'light'
-                              ? 'ring-2 ring-black ring-offset-2 scale-105'
-                              : 'ring-2 ring-white ring-offset-2 scale-105'
+                              ? 'ring-1 ring-black ring-offset-1 scale-105'
+                              : 'ring-1 ring-white ring-offset-1 scale-105'
                             : 'hover:scale-102 hover:ring-1 hover:ring-gray-300 hover:ring-offset-1'
                         }`}
                         style={{ fontFamily: font.family }}
                       >
                         {/* Selected indicator */}
                         {formData.font === font.id && (
-                          <div className={`absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-medium ${
+                          <div className={`absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center text-xs font-medium ${
                             theme === 'light' ? 'bg-black text-white' : 'bg-white text-black'
                           }`}>
                             ✓
                           </div>
                         )}
                         
-                        <div className={`text-sm font-medium tracking-wide py-1 ${modalStyling.labelColor}`}>{font.name}</div>
+                        <div className={`text-sm font-medium tracking-wide ${modalStyling.labelColor}`}>{font.name}</div>
                       </button>
                     ))}
                   </div>
-                </div>
+                </CollapsibleCard>
 
-                {/* Theme Selector */}
-                <div className="space-y-4">
-                  <Label className={`text-base font-medium ${modalStyling.labelColor}`}>Theme</Label>
-                  <div className="grid grid-cols-3 gap-4">
+                <CollapsibleCard title="Theme" theme={theme}>
+                  <div className="grid grid-cols-3 gap-3">
                     {themes.map((themeOption) => (
                       <button
                         key={themeOption.id}
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, theme: themeOption.id }))}
-                        className={`relative p-4 transition-all duration-200 ${themeOption.colors} ${
+                        className={`relative p-2 transition-all duration-200 ${themeOption.colors} ${
                           formData.theme === themeOption.id 
                             ? theme === 'light'
-                              ? 'ring-2 ring-black ring-offset-2 scale-105'
-                              : 'ring-2 ring-white ring-offset-2 scale-105'
+                              ? 'ring-1 ring-black ring-offset-1 scale-105'
+                              : 'ring-1 ring-white ring-offset-1 scale-105'
                             : 'hover:scale-102 hover:ring-1 hover:ring-gray-300 hover:ring-offset-1'
                         }`}
                       >
                         {/* Selected indicator */}
                         {formData.theme === themeOption.id && (
-                          <div className={`absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-medium ${
+                          <div className={`absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center text-xs font-medium ${
                             theme === 'light' ? 'bg-black text-white' : 'bg-white text-black'
                           }`}>
                             ✓
                           </div>
                         )}
                         
-                        <div className="text-sm font-medium tracking-wide py-1">{themeOption.name}</div>
+                        <div className="text-sm font-medium tracking-wide">{themeOption.name}</div>
                       </button>
                     ))}
                   </div>
-                </div>
+                </CollapsibleCard>
 
-                {/* Edit Form */}
-                <div className="space-y-8">
-                  {/* Title */}
-                  <div className="space-y-3">
-                    <Label htmlFor="title" className={`text-base font-medium ${modalStyling.labelColor}`}>Title</Label>
-                    <Input
-                      id="title"
-                      value={formData.title}
-                      onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                      placeholder="Page title"
-                      className={`text-base rounded-none ${modalStyling.inputBg}`}
-                    />
-                  </div>
+                <CollapsibleCard title="Title" theme={theme}>
+                  <TitleEditorModal
+                    value={formData.title}
+                    onChange={(value) => setFormData(prev => ({ ...prev, title: value }))}
+                    theme={theme}
+                    buttonClass={secondaryButtonClass || lightThemeButtonClass}
+                  />
+                </CollapsibleCard>
 
-                  {/* Description */}
-                  <div className="space-y-3">
-                    <Label htmlFor="description" className={`text-base font-medium ${modalStyling.labelColor}`}>Description</Label>
-                    <Textarea
-                      id="description"
-                      value={formData.description}
-                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                      placeholder="Page description"
-                      rows={3}
-                      className={`text-base rounded-none ${modalStyling.inputBg} ${theme === 'dark' ? '!bg-transparent dark:!bg-input/30' : ''}`}
-                    />
-                  </div>
-                </div>
+                <CollapsibleCard title="Description" theme={theme}>
+                  <DescriptionEditorModal
+                    value={formData.description}
+                    onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
+                    theme={theme}
+                    buttonClass={secondaryButtonClass || lightThemeButtonClass}
+                  />
+                </CollapsibleCard>
               </div>
             </div>
           </div>

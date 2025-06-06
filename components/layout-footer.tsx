@@ -18,7 +18,7 @@ export function LayoutFooter({ children, variant = 'default', theme, size = 'def
 
   return (
     <footer className={footerClasses}>
-      <div className="container mx-auto flex items-center justify-center max-w-7xl px-4">
+      <div className="flex items-center justify-center px-4">
         {children}
       </div>
     </footer>

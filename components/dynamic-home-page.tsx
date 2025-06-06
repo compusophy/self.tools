@@ -93,9 +93,9 @@ export function DynamicHomePage() {
           />
         </div>
 
-        {/* Main Content */}
-        <main className="mobile-layout-main flex items-center justify-center">
-          <div className="container mx-auto px-4 max-w-7xl">
+              {/* Main Content */}
+      <main className="mobile-layout-main flex items-center justify-center">
+        <div className="px-4">
             <div className="flex justify-center">
               <div className="w-full max-w-md space-y-8">
                 <div className="text-center">
@@ -147,7 +147,7 @@ export function DynamicHomePage() {
 
       {/* Main Content */}
       <main className="mobile-layout-main flex items-center justify-center">
-        <div className="container mx-auto px-4 max-w-7xl">
+        <div className="px-4">
           <div className="flex justify-center">
             <div className="w-full max-w-md space-y-8">
               <div className="text-center">

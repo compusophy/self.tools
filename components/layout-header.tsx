@@ -40,8 +40,8 @@ export function LayoutHeader({
   const paddingClass = size === 'large' ? 'py-6' : 'py-4';
   
   const headerClasses = variant === 'themed' && theme?.background
-    ? `flex-shrink-0 ${paddingClass} px-4`
-    : `flex-shrink-0 ${paddingClass} px-4`;
+    ? `flex-shrink-0 ${paddingClass}`
+    : `flex-shrink-0 ${paddingClass}`;
 
   const linkClasses = variant === 'themed' 
     ? `text-sm ${theme?.textSecondary || 'text-white/70'} hover:${theme?.textPrimary || 'text-white'} transition-colors`
@@ -60,7 +60,7 @@ export function LayoutHeader({
 
   return (
     <header className={headerClasses}>
-      <div className="container mx-auto flex items-center justify-between max-w-7xl">
+      <div className="flex items-center justify-between px-4">
         {/* Left side - Home link and Source button */}
         <div className="flex items-center gap-4">
           {showHomeLink && (

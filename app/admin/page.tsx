@@ -17,7 +17,7 @@ export default async function AdminPage() {
 
       {/* Main Content */}
       <main className="mobile-layout-main">
-        <div className="container mx-auto px-4 max-w-7xl py-8">
+        <div className="px-4 py-8">
           <div className="mb-8 text-center">
             <h1 className="text-3xl font-bold text-foreground">Admin</h1>
           </div>

@@ -327,8 +327,8 @@ export function AdminModal({ theme = 'dark', secondaryButtonClass = '' }: AdminM
         </div>
 
         {/* Scrollable Content Area */}
-        <div className="modal-mobile-main">
-          <div className="container mx-auto px-4 py-8 max-w-4xl">
+                  <div className="modal-mobile-main">
+            <div className="px-4 py-8">
             {initialLoading && subdomains.length === 0 ? (
               <div className={`text-center ${cardStyling.text}`}>
                 Loading your subdomains...
