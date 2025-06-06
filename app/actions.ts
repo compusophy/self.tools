@@ -96,6 +96,8 @@ export async function updateSubdomainContentAction(
   const font = formData.get('font') as string;
   const deviceId = formData.get('deviceId') as string;
 
+
+
   if (!subdomain) {
     return { success: false, error: 'Subdomain is required' };
   }

@@ -29,7 +29,7 @@ export async function generateMetadata({
           type: "launch_frame",
           name: `${subdomain}.${rootDomain}`,
           url: `${protocol}://${subdomain}.${rootDomain}/`,
-          splashImageUrl: `${protocol}://${subdomain}.${rootDomain}/api/icon`,
+          splashImageUrl: `${protocol}://${rootDomain}/s/${subdomain}/api/icon`,
           splashBackgroundColor: "#000000",
         },
       },
@@ -49,28 +49,34 @@ export async function generateMetadata({
     };
   }
 
+  // Use content data for metadata
+  const ogTitle = `${subdomainData.content.title} | ${subdomain}.${rootDomain}`;
+  const ogDescription = subdomainData.content.description;
+  
+  const ogImageUrl = `${protocol}://${rootDomain}/opengraph-image?subdomain=${subdomain}`;
+
   const frameData = {
     version: "next",
-    imageUrl: `${protocol}://${rootDomain}/opengraph-image?subdomain=${subdomain}`,
+    imageUrl: ogImageUrl,
     button: {
       title: "launch",
       action: {
         type: "launch_frame",
         name: `${subdomain}.${rootDomain}`,
         url: `${protocol}://${subdomain}.${rootDomain}/`,
-        splashImageUrl: `${protocol}://${subdomain}.${rootDomain}/api/icon`,
+        splashImageUrl: `${protocol}://${rootDomain}/s/${subdomain}/api/icon`,
         splashBackgroundColor: "#000000",
       },
     },
   };
 
   return {
-    title: `${subdomainData.content.title} | ${subdomain}.${rootDomain}`,
-    description: subdomainData.content.description,
+    title: ogTitle,
+    description: ogDescription,
     openGraph: {
-      title: `${subdomainData.content.title} | ${subdomain}.${rootDomain}`,
-      description: subdomainData.content.description,
-      images: [`${protocol}://${rootDomain}/opengraph-image?subdomain=${subdomain}`],
+      title: ogTitle,
+      description: ogDescription,
+      images: [ogImageUrl],
     },
     other: {
       "fc:frame": JSON.stringify(frameData),

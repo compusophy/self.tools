@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { FarcasterJFS } from '../../../lib/farcaster-jfs';
 import { redis } from '../../../lib/redis';
+import { getSubdomainData } from '../../../lib/subdomains';
 
 // Constants for Farcaster verification
 const CUSTODY_PRIVATE_KEY = process.env.CUSTODY_PRIVATE_KEY!;
@@ -103,6 +104,16 @@ export async function GET(request: Request) {
     };
   }
 
+  // Get subdomain data for custom metadata
+  let subdomainData: Awaited<ReturnType<typeof getSubdomainData>> = null;
+  if (subdomain) {
+    subdomainData = await getSubdomainData(subdomain);
+  }
+
+  // Use subdomain data for frame name
+  const frameName = subdomain ? `${subdomain}.${MANIFEST_DOMAIN}` : MANIFEST_DOMAIN;
+  const splashBackgroundColor = "#000000";
+  
   const config = {
     ...(accountAssociation
       ? { accountAssociation }
@@ -117,9 +128,9 @@ export async function GET(request: Request) {
 
     frame: {
       version: "1",
-      name: subdomain ? `${subdomain}.${MANIFEST_DOMAIN}` : MANIFEST_DOMAIN,
+      name: frameName,
       iconUrl: subdomain
-        ? `${subdomainUrl}/api/icon`
+        ? `${baseUrl}/s/${subdomain}/api/icon`
         : `${baseUrl}/api/icon`,
       homeUrl: subdomain
         ? subdomainUrl
@@ -129,9 +140,9 @@ export async function GET(request: Request) {
         : `${baseUrl}/opengraph-image.png`,
       buttonTitle: "launch",
       splashImageUrl: subdomain
-        ? `${subdomainUrl}/api/icon`
+        ? `${baseUrl}/s/${subdomain}/api/icon`
         : `${baseUrl}/api/icon`,
-      splashBackgroundColor: "#000000",
+      splashBackgroundColor: splashBackgroundColor,
       webhookUrl: subdomain 
         ? `${subdomainUrl}/api/webhook`
         : `${baseUrl}/api/webhook`,

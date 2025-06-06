@@ -11,6 +11,7 @@ export type SubdomainData = {
     lastModified: number;
     font: 'mono' | 'serif' | 'sans';
   };
+
   settings: {
     allowEditing: boolean;
     isPublished: boolean;

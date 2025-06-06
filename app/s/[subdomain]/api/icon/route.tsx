@@ -9,6 +9,11 @@ export async function GET(
 ) {
   const { subdomain } = await params;
   
+  // Use subdomain defaults
+  const iconText = subdomain.charAt(0).toUpperCase();
+  const backgroundColor = '#000000';
+  const textColor = '#ffffff';
+  
   return new ImageResponse(
     (
       <div
@@ -18,7 +23,7 @@ export async function GET(
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#000000',
+          backgroundColor: backgroundColor,
           borderRadius: '12px',
         }}
       >
@@ -27,13 +32,13 @@ export async function GET(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'white',
+            color: textColor,
             fontWeight: 'bold',
             fontFamily: 'system-ui, sans-serif',
             fontSize: '79px',
           }}
         >
-          {subdomain.charAt(0).toUpperCase()}
+          {iconText}
         </div>
       </div>
     ),
