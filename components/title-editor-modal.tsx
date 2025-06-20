@@ -69,6 +69,21 @@ export function TitleEditorModal({
     setIsOpen(false);
   };
 
+  // Auto-focus when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      // Small delay to ensure modal is fully rendered
+      setTimeout(() => {
+        const input = document.getElementById('title-editor');
+        if (input) {
+          input.focus();
+          // Position cursor at end of text
+          (input as HTMLInputElement).setSelectionRange(localValue.length, localValue.length);
+        }
+      }, 100);
+    }
+  }, [isOpen, localValue.length]);
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -113,7 +128,6 @@ export function TitleEditorModal({
               onChange={(e) => setLocalValue(e.target.value)}
               placeholder="Enter your page title..."
               className={`text-base rounded-none ${modalStyling.inputBg}`}
-              autoFocus
             />
           </div>
         </div>

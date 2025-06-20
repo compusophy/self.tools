@@ -70,6 +70,21 @@ export function DescriptionEditorModal({
     setIsOpen(false);
   };
 
+  // Auto-focus when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      // Small delay to ensure modal is fully rendered
+      setTimeout(() => {
+        const textarea = document.getElementById('description-editor');
+        if (textarea) {
+          textarea.focus();
+          // Position cursor at end of text
+          (textarea as HTMLTextAreaElement).setSelectionRange(localValue.length, localValue.length);
+        }
+      }, 100);
+    }
+  }, [isOpen, localValue.length]);
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -115,7 +130,6 @@ export function DescriptionEditorModal({
               placeholder="Enter your page description..."
               rows={8}
               className={`text-base rounded-none resize-none ${modalStyling.inputBg}`}
-              autoFocus
             />
           </div>
         </div>

@@ -9,15 +9,30 @@ interface CollapsibleCardProps {
   children: React.ReactNode;
   defaultOpen?: boolean;
   theme?: 'dark' | 'light' | 'color';
+  isOpen?: boolean;
+  onToggle?: () => void;
 }
 
 export function CollapsibleCard({ 
   title, 
   children, 
   defaultOpen = false,
-  theme = 'dark'
+  theme = 'dark',
+  isOpen: controlledIsOpen,
+  onToggle
 }: CollapsibleCardProps) {
-  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [internalIsOpen, setInternalIsOpen] = useState(defaultOpen);
+  
+  // Use controlled state if provided, otherwise use internal state
+  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+  
+  const handleToggle = () => {
+    if (onToggle) {
+      onToggle();
+    } else {
+      setInternalIsOpen(!internalIsOpen);
+    }
+  };
 
   const getCardStyling = () => {
     switch (theme) {
@@ -50,8 +65,8 @@ export function CollapsibleCard({
       {/* Header - Always Visible */}
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-full px-4 py-3 flex items-center justify-between border-b transition-all duration-200 ${styling.header}`}
+        onClick={handleToggle}
+        className={`w-full px-4 py-3 flex items-center justify-between transition-all duration-200 ${styling.header}`}
       >
         <span className="text-base font-medium tracking-wide">{title}</span>
         <div className={`transition-transform duration-200 ${isOpen ? 'rotate-90' : ''} ${styling.chevron}`}>

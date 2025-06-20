@@ -59,6 +59,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
   const [state, action, isPending] = useActionState(updateSubdomainContentAction, { success: false, message: '' });
   const [claimState, claimAction, isClaimPending] = useActionState(claimSubdomainOwnershipAction, { success: false, message: '' });
   const [deviceId, setDeviceId] = useState('');
+  const [openCard, setOpenCard] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     title: data.content.title,
@@ -82,6 +83,10 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
   }, [state.success]);
 
   const isOwner = data.createdBy === deviceId;
+
+  const handleCardToggle = (cardName: string) => {
+    setOpenCard(openCard === cardName ? null : cardName);
+  };
 
   // Get modal background and text colors based on theme
   const getModalStyling = () => {
@@ -156,7 +161,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
           <div className="modal-mobile-main">
             <div className="px-4 py-8">
               <div className="space-y-4">
-                <CollapsibleCard title="Font" theme={theme}>
+                <CollapsibleCard title="Font" theme={theme} isOpen={openCard === 'Font'} onToggle={() => handleCardToggle('Font')}>
                   <div className="grid grid-cols-3 gap-3">
                     {fonts.map((font) => (
                       <button
@@ -193,7 +198,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                   </div>
                 </CollapsibleCard>
 
-                <CollapsibleCard title="Theme" theme={theme}>
+                <CollapsibleCard title="Theme" theme={theme} isOpen={openCard === 'Theme'} onToggle={() => handleCardToggle('Theme')}>
                   <div className="grid grid-cols-3 gap-3">
                     {themes.map((themeOption) => (
                       <button
@@ -223,7 +228,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                   </div>
                 </CollapsibleCard>
 
-                <CollapsibleCard title="Title" theme={theme}>
+                <CollapsibleCard title="Title" theme={theme} isOpen={openCard === 'Title'} onToggle={() => handleCardToggle('Title')}>
                   <TitleEditorModal
                     value={formData.title}
                     onChange={(value) => setFormData(prev => ({ ...prev, title: value }))}
@@ -232,7 +237,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                   />
                 </CollapsibleCard>
 
-                <CollapsibleCard title="Description" theme={theme}>
+                <CollapsibleCard title="Description" theme={theme} isOpen={openCard === 'Description'} onToggle={() => handleCardToggle('Description')}>
                   <DescriptionEditorModal
                     value={formData.description}
                     onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
