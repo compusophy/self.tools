@@ -180,7 +180,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
             <div className="px-4 py-8">
               <div className="space-y-4">
                 <CollapsibleCard title="Font" theme={theme} isOpen={openCard === 'Font'} onToggle={() => handleCardToggle('Font')} buttonClass={secondaryButtonClass || lightThemeButtonClass}>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-4">
                     {fonts.map((font) => (
                       <button
                         key={font.id}
@@ -217,7 +217,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                 </CollapsibleCard>
 
                 <CollapsibleCard title="Theme" theme={theme} isOpen={openCard === 'Theme'} onToggle={() => handleCardToggle('Theme')} buttonClass={secondaryButtonClass || lightThemeButtonClass}>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 gap-4">
                     {themes.map((themeOption) => (
                       <button
                         key={themeOption.id}
