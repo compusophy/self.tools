@@ -250,6 +250,20 @@
   @apply hover:text-black hover:bg-gray-50;
 }
 
+/* Hover-only glow effect that can be combined with any styling */
+.btn-hover-glow {
+  @apply cursor-pointer;
+  transition: var(--button-transition);
+}
+
+.btn-hover-glow:hover {
+  box-shadow: 
+    var(--secondary-glow-inner) rgba(255, 255, 255, 0.2),
+    var(--secondary-glow-outer) rgba(255, 255, 255, 0.1),
+    var(--secondary-glow-shadow) rgba(0, 0, 0, 0.2);
+  transform: var(--secondary-glow-transform);
+}
+
 /* ===== MOBILE-FRIENDLY LAYOUT SYSTEM ===== */
 
 /* Main container for mobile-friendly layout */

@@ -161,25 +161,19 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
           <div className="modal-mobile-main">
             <div className="px-4 py-8">
               <div className="space-y-4">
-                <CollapsibleCard title="Font" theme={theme} isOpen={openCard === 'Font'} onToggle={() => handleCardToggle('Font')}>
+                <CollapsibleCard title="Font" theme={theme} isOpen={openCard === 'Font'} onToggle={() => handleCardToggle('Font')} buttonClass={secondaryButtonClass || lightThemeButtonClass}>
                   <div className="grid grid-cols-3 gap-3">
                     {fonts.map((font) => (
                       <button
                         key={font.id}
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, font: font.id }))}
-                        className={`relative p-2 transition-all duration-200 ${
-                          theme === 'light' 
-                            ? 'bg-white text-black border border-gray-300' 
-                            : theme === 'color'
-                            ? 'bg-gradient-to-br from-purple-600 to-pink-600 text-white'
-                            : 'bg-black text-white'
-                        } ${
+                        className={`relative p-2 ${secondaryButtonClass || lightThemeButtonClass} ${
                           formData.font === font.id 
                             ? theme === 'light'
                               ? 'ring-1 ring-black ring-offset-1 scale-105'
                               : 'ring-1 ring-white ring-offset-1 scale-105'
-                            : 'hover:scale-102 hover:ring-1 hover:ring-gray-300 hover:ring-offset-1'
+                            : ''
                         }`}
                         style={{ fontFamily: font.family }}
                       >
@@ -192,25 +186,25 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                           </div>
                         )}
                         
-                        <div className={`text-sm font-medium tracking-wide ${modalStyling.labelColor}`}>{font.name}</div>
+                        <div className={`text-sm font-medium tracking-wide`}>{font.name}</div>
                       </button>
                     ))}
                   </div>
                 </CollapsibleCard>
 
-                <CollapsibleCard title="Theme" theme={theme} isOpen={openCard === 'Theme'} onToggle={() => handleCardToggle('Theme')}>
+                <CollapsibleCard title="Theme" theme={theme} isOpen={openCard === 'Theme'} onToggle={() => handleCardToggle('Theme')} buttonClass={secondaryButtonClass || lightThemeButtonClass}>
                   <div className="grid grid-cols-3 gap-3">
                     {themes.map((themeOption) => (
                       <button
                         key={themeOption.id}
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, theme: themeOption.id }))}
-                        className={`relative p-2 transition-all duration-200 ${themeOption.colors} ${
+                        className={`relative p-2 ${themeOption.colors} btn-hover-glow ${
                           formData.theme === themeOption.id 
                             ? theme === 'light'
                               ? 'ring-1 ring-black ring-offset-1 scale-105'
                               : 'ring-1 ring-white ring-offset-1 scale-105'
-                            : 'hover:scale-102 hover:ring-1 hover:ring-gray-300 hover:ring-offset-1'
+                            : ''
                         }`}
                       >
                         {/* Selected indicator */}
@@ -228,7 +222,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                   </div>
                 </CollapsibleCard>
 
-                <CollapsibleCard title="Title" theme={theme} isOpen={openCard === 'Title'} onToggle={() => handleCardToggle('Title')}>
+                <CollapsibleCard title="Title" theme={theme} isOpen={openCard === 'Title'} onToggle={() => handleCardToggle('Title')} buttonClass={secondaryButtonClass || lightThemeButtonClass}>
                   <TitleEditorModal
                     value={formData.title}
                     onChange={(value) => setFormData(prev => ({ ...prev, title: value }))}
@@ -237,7 +231,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                   />
                 </CollapsibleCard>
 
-                <CollapsibleCard title="Description" theme={theme} isOpen={openCard === 'Description'} onToggle={() => handleCardToggle('Description')}>
+                <CollapsibleCard title="Description" theme={theme} isOpen={openCard === 'Description'} onToggle={() => handleCardToggle('Description')} buttonClass={secondaryButtonClass || lightThemeButtonClass}>
                   <DescriptionEditorModal
                     value={formData.description}
                     onChange={(value) => setFormData(prev => ({ ...prev, description: value }))}

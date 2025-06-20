@@ -11,6 +11,7 @@ interface CollapsibleCardProps {
   theme?: 'dark' | 'light' | 'color';
   isOpen?: boolean;
   onToggle?: () => void;
+  buttonClass?: string;
 }
 
 export function CollapsibleCard({ 
@@ -19,7 +20,8 @@ export function CollapsibleCard({
   defaultOpen = false,
   theme = 'dark',
   isOpen: controlledIsOpen,
-  onToggle
+  onToggle,
+  buttonClass = ''
 }: CollapsibleCardProps) {
   const [internalIsOpen, setInternalIsOpen] = useState(defaultOpen);
   
@@ -39,20 +41,17 @@ export function CollapsibleCard({
       case 'light':
         return {
           card: 'bg-white border-gray-300 text-black',
-          header: 'border-gray-300 text-black hover:bg-gray-50',
           chevron: 'text-gray-600'
         };
       case 'color':
         return {
           card: 'bg-white/10 border-white/30 text-white',
-          header: 'border-white/30 text-white hover:bg-white/5',
           chevron: 'text-white/80'
         };
       case 'dark':
       default:
         return {
           card: 'bg-white/10 border-white/30 text-white',
-          header: 'border-white/30 text-white hover:bg-white/5',
           chevron: 'text-white/80'
         };
     }
@@ -66,7 +65,7 @@ export function CollapsibleCard({
       <button
         type="button"
         onClick={handleToggle}
-        className={`w-full px-4 py-3 flex items-center justify-between transition-all duration-200 ${styling.header}`}
+        className={`w-full px-4 py-3 flex items-center justify-between transition-all duration-200 ${buttonClass}`}
       >
         <span className="text-base font-medium tracking-wide">{title}</span>
         <div className={`transition-transform duration-200 ${isOpen ? 'rotate-90' : ''} ${styling.chevron}`}>
