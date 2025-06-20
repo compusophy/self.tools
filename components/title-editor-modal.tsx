@@ -82,7 +82,7 @@ export function TitleEditorModal({
         }
       }, 100);
     }
-  }, [isOpen, localValue.length]);
+  }, [isOpen]);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

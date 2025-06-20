@@ -88,6 +88,23 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
     setOpenCard(openCard === cardName ? null : cardName);
   };
 
+  const handleCancel = () => {
+    // Reset form data to original values
+    setFormData({
+      title: data.content.title,
+      description: data.content.description,
+      theme: data.content.theme,
+      font: (data.content as any).font || 'mono',
+    });
+  };
+
+  // Check if there are unsaved changes
+  const hasUnsavedChanges = 
+    formData.title !== data.content.title ||
+    formData.description !== data.content.description ||
+    formData.theme !== data.content.theme ||
+    formData.font !== ((data.content as any).font || 'mono');
+
   // Get modal background and text colors based on theme
   const getModalStyling = () => {
     switch (theme) {
@@ -140,6 +157,7 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
               variant="outline"
               size="sm"
               className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}
+              onClick={handleCancel}
             >
               <X className="w-4 h-4 mr-2" />
               Cancel
@@ -168,7 +186,13 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
                         key={font.id}
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, font: font.id }))}
-                        className={`relative p-2 ${secondaryButtonClass || lightThemeButtonClass} ${
+                        className={`relative p-2 ${
+                          theme === 'light' 
+                            ? 'bg-white text-black border border-gray-300' 
+                            : theme === 'color'
+                            ? 'bg-white/10 border-white/30 text-white'
+                            : 'bg-white/10 border-white/30 text-white'
+                        } btn-hover-glow ${
                           formData.font === font.id 
                             ? theme === 'light'
                               ? 'ring-1 ring-black ring-offset-1 scale-105'
@@ -245,10 +269,17 @@ export function SubdomainEditor({ subdomain, data, theme = 'dark', themeStyles, 
 
           {/* Footer */}
           <div className="modal-mobile-footer">
-            <Button type="submit" disabled={isPending} size="sm" variant="outline" className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
-              <Save className="w-4 h-4 mr-2" />
-              {isPending ? 'Saving...' : 'Save'}
-            </Button>
+            <div className="flex flex-col items-center gap-4">
+              {hasUnsavedChanges && (
+                <div className={`text-sm ${modalStyling.labelColor} opacity-70`}>
+                  You have unsaved changes
+                </div>
+              )}
+              <Button type="submit" disabled={isPending} size="sm" variant="outline" className={secondaryButtonClass || `shadow-lg cursor-pointer ${lightThemeButtonClass}`}>
+                <Save className="w-4 h-4 mr-2" />
+                {isPending ? 'Saving...' : 'Save'}
+              </Button>
+            </div>
           </div>
         </form>
       </DialogContent>
